@@ -1,4 +1,4 @@
-// server.js — API REST completa para Patitas Felices
+/ server.js — API REST completa para Patitas Felices
 require('dotenv').config();
 
 const express  = require('express');
@@ -10,7 +10,7 @@ const app  = express();
 const PORT = process.env.PORT || 3000;
 
 // ─── Middlewares ───────────────────────────────────────────
-app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
+
 app.use(express.json());
 
 // Log simple de peticiones
