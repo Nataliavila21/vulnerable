@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patitas Felices</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f4f0e8;--bg-2:#ede8de;--bg-3:#e6e0d4;--white:#fdfcf9;--verde:#3d6b4f;--verde-lt:#4e7f61;--verde-dim:rgba(61,107,79,.10);--tierra:#8b6044;--tierra-lt:rgba(139,96,68,.12);--txt-1:#1f2b1e;--txt-2:#6b7a68;--txt-3:#9aaa96;--line:rgba(31,43,30,.10);--line-2:rgba(61,107,79,.28);--radius:10px;--radius-lg:18px;--shadow:0 4px 28px rgba(31,43,30,.08);}
+    *,*::before,*::after{box-sizing:border-box;}html{scroll-behavior:smooth;}
+    body{font-family:'Jost',sans-serif;background:var(--bg);color:var(--txt-1);line-height:1.65;}
+    h1,h2,h3{font-family:'Lora',serif;line-height:1.18;font-weight:400;}
+    h1{font-size:clamp(2.6rem,5vw,4.4rem);letter-spacing:-.015em;}
+    h2{font-size:clamp(1.8rem,3.2vw,2.6rem);}h3{font-size:1.15rem;font-weight:500;}
+    p{color:var(--txt-2);font-size:.96rem;font-weight:300;}
+    .tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.68rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;}
+    .tag::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+    .tag-disponible{background:rgba(61,107,79,.13);color:#3d6b4f;}.tag-disponible::before{background:#3d6b4f;}
+    .tag-tratamiento{background:rgba(139,96,68,.12);color:var(--tierra);}.tag-tratamiento::before{background:var(--tierra);}
+    .tag-adoptado{background:rgba(107,122,104,.12);color:var(--txt-2);}.tag-adoptado::before{background:var(--txt-3);}
+    .tag-pendiente{background:rgba(139,96,68,.12);color:var(--tierra);}.tag-pendiente::before{background:var(--tierra);}
+    .tag-aprobada{background:rgba(61,107,79,.13);color:#3d6b4f;}.tag-aprobada::before{background:#3d6b4f;}
+    .tag-rechazada{background:rgba(107,122,104,.12);color:var(--txt-2);}.tag-rechazada::before{background:var(--txt-3);}
+    .btn-v{background:var(--verde)!important;color:#fff!important;border:none!important;border-radius:99px!important;font-family:'Jost',sans-serif;font-weight:500;letter-spacing:.04em;transition:all .18s;}
+    .btn-v:hover{background:var(--verde-lt)!important;transform:translateY(-2px);box-shadow:0 6px 22px rgba(61,107,79,.28)!important;}
+    .btn-ov{background:transparent!important;color:var(--verde)!important;border:1.5px solid var(--line-2)!important;border-radius:99px!important;font-family:'Jost',sans-serif;font-weight:500;transition:all .18s;}
+    .btn-ov:hover{background:var(--verde-dim)!important;transform:translateY(-2px);}
+    .btn-t{background:var(--tierra)!important;color:#fff!important;border:none!important;border-radius:99px!important;font-family:'Jost',sans-serif;font-weight:500;transition:all .18s;}
+    .btn-t:hover{background:#a07050!important;transform:translateY(-2px);}
+    nav.mnav{position:sticky;top:0;z-index:100;background:rgba(244,240,232,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
+    .nlogo{font-family:'Lora',serif;font-size:1.25rem;font-weight:500;color:var(--txt-1)!important;text-decoration:none;}
+    .nav-link{color:var(--txt-2)!important;font-size:.87rem;}.nav-link:hover{color:var(--verde)!important;}
+    .rbadge{font-size:.69rem;font-weight:500;letter-spacing:.06em;padding:3px 10px;border-radius:99px;text-transform:uppercase;}
+    .rb-inv{background:rgba(154,170,150,.18);color:var(--txt-2);}.rb-adp{background:rgba(61,107,79,.15);color:var(--verde);}.rb-trb{background:rgba(139,96,68,.15);color:var(--tierra);}
+    .hero{min-height:90vh;display:flex;align-items:center;padding:clamp(4rem,9vw,7rem) 0;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;right:-80px;top:-80px;width:680px;height:680px;border-radius:60% 40% 55% 45%/50% 60% 40% 50%;background:radial-gradient(circle at 40% 40%,rgba(61,107,79,.13) 0%,rgba(139,96,68,.06) 50%,transparent 70%);pointer-events:none;animation:blob 18s linear infinite;}
+    @keyframes blob{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+    .eyebrow{font-size:.73rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--verde);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+    .eyebrow::before{content:'';width:24px;height:1.5px;background:var(--verde);}
+    .snum{font-family:'Lora',serif;font-size:2.3rem;font-weight:400;color:var(--txt-1);line-height:1;}
+    .snum em{font-style:normal;color:var(--verde);font-size:1.3rem;}
+    .slbl{font-size:.77rem;color:var(--txt-3);margin-top:3px;}
+    .hstats{border-top:1px solid var(--line);padding-top:34px;margin-top:48px;}
+    .hcard{background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);padding:18px 16px;box-shadow:var(--shadow);transition:transform .22s;}
+    .hcard:hover{transform:translateY(-4px);}
+    .hcard-name{font-family:'Lora',serif;font-size:1.1rem;color:var(--txt-1);margin-bottom:3px;}
+    .hcard-info{font-size:.76rem;color:var(--txt-2);margin-bottom:8px;}
+    .sect-alt{background:var(--bg-2);}.sect-wht{background:var(--white);}
+    .slabel{font-size:.7rem;font-weight:500;letter-spacing:.17em;text-transform:uppercase;color:var(--verde);display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+    .slabel::before{content:'';width:18px;height:1.5px;background:var(--verde);}
+    .slabel.c{justify-content:center;}.slabel.c::before{display:none;}
+    .fbtn{padding:6px 16px;border-radius:99px;border:1.5px solid var(--line);background:transparent;font-family:'Jost',sans-serif;font-size:.8rem;cursor:pointer;transition:all .15s;color:var(--txt-2);}
+    .fbtn:hover{border-color:var(--verde);color:var(--verde);}.fbtn.act{background:var(--verde);color:#fff;border-color:var(--verde);}
+    .acard{background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;height:100%;}
+    .acard:hover{transform:translateY(-5px);box-shadow:0 14px 44px rgba(31,43,30,.12);}
+    .cimg{height:140px;display:flex;align-items:center;justify-content:center;font-size:4.4rem;background:linear-gradient(135deg,var(--bg-2) 0%,var(--bg-3) 100%);border-bottom:1px solid var(--line);}
+    .cbody{padding:15px;}
+    .cmeta{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
+    .cinfo{font-size:.78rem;color:var(--txt-3);margin:4px 0 12px;}
+    .step{display:flex;gap:18px;align-items:flex-start;padding:20px 0;border-bottom:1px solid var(--line);transition:padding-left .18s;}
+    .step:hover{padding-left:6px;}.step:last-child{border-bottom:none;}
+    .stepn{font-family:'Lora',serif;font-size:1.6rem;font-weight:400;color:var(--verde);min-width:28px;line-height:1;}
+    .stept strong{display:block;color:var(--txt-1);font-weight:500;font-size:.93rem;margin-bottom:2px;}
+    .stept span{font-size:.83rem;color:var(--txt-2);font-weight:300;}
+    .fcard{background:var(--bg);border-radius:var(--radius-lg);padding:30px;border:1px solid var(--line);box-shadow:var(--shadow);}
+    .flabel{font-size:.73rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-2);margin-bottom:6px;display:block;}
+    .finput{width:100%;padding:10px 13px;border:1.5px solid var(--line);border-radius:var(--radius);font-family:'Jost',sans-serif;font-size:.91rem;font-weight:300;background:var(--white);color:var(--txt-1);outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none;}
+    .finput::placeholder{color:var(--txt-3);}
+    .finput:focus{border-color:var(--verde)!important;box-shadow:0 0 0 3px rgba(61,107,79,.1)!important;}
+    textarea.finput{resize:vertical;min-height:85px;}
+    .smsg{display:none;margin-top:11px;padding:11px 15px;border-radius:var(--radius);background:rgba(61,107,79,.1);color:var(--verde);font-size:.84rem;border:1px solid rgba(61,107,79,.2);}
+    .emsg{display:none;margin-top:11px;padding:11px 15px;border-radius:var(--radius);background:rgba(139,96,68,.1);color:var(--tierra);font-size:.84rem;border:1px solid rgba(139,96,68,.2);}
+    .apicard{background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px;box-shadow:var(--shadow);}
+    .litems{list-style:none;padding:0;max-height:320px;overflow-y:auto;}
+    .litems::-webkit-scrollbar{width:4px;}.litems::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;}
+    .litem{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--radius);background:var(--bg);border:1px solid var(--line);font-size:.86rem;color:var(--txt-1);margin-bottom:6px;animation:slin .2s ease;}
+    .ldot{width:7px;height:7px;border-radius:50%;background:var(--verde);flex-shrink:0;}
+    @keyframes slin{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+    .lempty{font-size:.84rem;color:var(--txt-3);font-style:italic;padding:9px 0;}
+    .cbadge{font-size:.77rem;font-weight:300;color:var(--txt-3);margin-left:5px;}
+    .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:5px;}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    footer{background:var(--txt-1);padding:50px 0 26px;}
+    .flogo{font-family:'Lora',serif;font-size:1.2rem;font-weight:400;color:var(--bg)!important;text-decoration:none;}
+    .fbrand p{font-size:.85rem;color:rgba(244,240,232,.44);max-width:255px;line-height:1.75;}
+    .fcol h4{font-size:.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:14px;}
+    .fcol a{color:rgba(244,240,232,.48);text-decoration:none;font-size:.85rem;font-weight:300;transition:color .15s;display:block;margin-bottom:8px;}
+    .fcol a:hover{color:var(--bg);}
+    .fbot{font-size:.77rem;color:rgba(255,255,255,.26);border-top:1px solid rgba(255,255,255,.07);padding-top:20px;margin-top:40px;}
+    /* MODAL */
+    #lmodal .modal-content{background:var(--bg);border:none;border-radius:var(--radius-lg);box-shadow:0 24px 80px rgba(31,43,30,.22);overflow:hidden;}
+    #lmodal .modal-header{border-bottom:1px solid var(--line);padding:18px 24px;}
+    #lmodal .modal-body{padding:18px 24px 24px;}
+    .mlogo{font-family:'Lora',serif;font-size:1.45rem;color:var(--txt-1);}
+    .mlogo em{color:var(--verde);font-style:italic;}
+    .atabs{display:flex;gap:7px;margin-bottom:16px;}
+    .atab{flex:1;padding:9px 5px;border-radius:var(--radius);border:1.5px solid var(--line);background:var(--white);cursor:pointer;transition:all .18s;text-align:center;font-family:'Jost',sans-serif;}
+    .atab .ti{font-size:1.35rem;display:block;margin-bottom:2px;}
+    .atab .tl{font-size:.7rem;color:var(--txt-2);display:block;}
+    .atab.ai{border-color:var(--txt-3);background:rgba(154,170,150,.1);}.atab.ai .tl{color:var(--txt-2);font-weight:500;}
+    .atab.aa{border-color:var(--verde);background:var(--verde-dim);}.atab.aa .tl{color:var(--verde);font-weight:500;}
+    .atab.at{border-color:var(--tierra);background:var(--tierra-lt);}.atab.at .tl{color:var(--tierra);font-weight:500;}
+    .lpanel{display:none;}.lpanel.on{display:block;animation:pin .25s ease;}
+    @keyframes pin{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+    .lerr{display:none;padding:8px 12px;border-radius:var(--radius);background:rgba(139,96,68,.1);color:var(--tierra);font-size:.82rem;border:1px solid rgba(139,96,68,.2);margin-top:10px;}
+    /* DOG */
+    .dwrap{display:flex;flex-direction:column;align-items:center;margin-bottom:12px;}
+    .dbox{position:relative;width:118px;height:106px;}
+    .dpg{transition:transform .1s ease;}
+    .dbrow{stroke-linecap:round;fill:none;transition:all .2s ease;}
+    .dtail{transform-origin:82px 65px;animation:wag .65s ease-in-out infinite;}
+    @keyframes wag{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(20deg)}}
+    .dcover{opacity:0;transition:opacity .25s ease;}.dcover.on{opacity:1;}
+    .dmsg{font-size:.7rem;color:var(--txt-3);font-style:italic;text-align:center;min-height:14px;margin-top:2px;}
+    /* ROL VISIBILIDAD */
+    .w-only{display:none;}body.rw .w-only{display:block;}
+    .reg-sect{display:none;}body.ra .reg-sect,body.rw .reg-sect{display:block;}
+    body.ri .btn-adp{pointer-events:none;opacity:.5;}
+    /* ADMIN */
+    #padmin{display:none;}
+    .alayout{display:flex;min-height:calc(100vh - 64px);}
+    .aside{width:248px;flex-shrink:0;background:var(--txt-1);position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
+    .aside::-webkit-scrollbar{width:3px;}.aside::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:99px;}
+    .acontent{flex:1;background:var(--bg-2);min-width:0;}
+    .aslogo{padding:18px 16px 12px;border-bottom:1px solid rgba(255,255,255,.07);}
+    .asname{font-family:'Lora',serif;font-size:1rem;color:var(--bg);font-weight:400;display:block;}
+    .assub{font-size:.65rem;color:rgba(244,240,232,.26);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;display:block;}
+    .asnav{padding:11px 9px;}
+    .assec{font-size:.6rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.17);padding:11px 12px 4px;}
+    .snb{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:8px;color:rgba(244,240,232,.48);font-size:.84rem;cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;margin-bottom:1px;}
+    .snb i{font-size:.9rem;width:15px;text-align:center;}
+    .snb:hover{background:rgba(255,255,255,.07);color:var(--bg);}.snb.on{background:rgba(61,107,79,.28);color:#9dd4b2;}
+    .apanel{display:none;padding:26px;animation:pin .2s ease;}.apanel.on{display:block;}
+    .scard{background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow);}
+    .sci{font-size:1.55rem;margin-bottom:6px;display:block;}
+    .scn{font-family:'Lora',serif;font-size:1.85rem;font-weight:400;color:var(--txt-1);line-height:1;}
+    .scl{font-size:.75rem;color:var(--txt-3);margin-top:2px;}
+    .ctbl{width:100%;border-collapse:collapse;}
+    .ctbl th{font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3);padding:8px 12px;border-bottom:2px solid var(--line);text-align:left;white-space:nowrap;}
+    .ctbl td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:.85rem;color:var(--txt-1);vertical-align:middle;}
+    .ctbl tr:last-child td{border-bottom:none;}.ctbl tr:hover td{background:rgba(61,107,79,.025);}
+    nav.anav{position:sticky;top:0;z-index:100;background:var(--txt-1);border-bottom:1px solid rgba(255,255,255,.06);height:64px;display:flex;align-items:center;padding:0 22px;}
+    .abrand{font-family:'Lora',serif;font-size:1.05rem;color:var(--bg);font-weight:400;}
+    .fade-up{opacity:0;transform:translateY(18px);animation:fup .55s ease forwards;}
+    @keyframes fup{to{opacity:1;transform:none}}
+    .d1{animation-delay:.07s}.d2{animation-delay:.16s}.d3{animation-delay:.25s}.d4{animation-delay:.35s}.d5{animation-delay:.45s}
+    @media(max-width:768px){.hvcol{display:none;}.alayout{flex-direction:column;}.aside{width:100%;position:relative;top:0;height:auto;}}
+  </style>
+</head>
+<body>
+
+<!-- MODAL LOGIN -->
+<div class="modal fade" id="lmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:484px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div><div class="mlogo">Patitas <em>Felices</em></div><div style="font-size:.74rem;color:var(--txt-3);margin-top:2px">Centro de adopción · CDMX</div></div>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom:14px;font-size:.86rem">Elige cómo quieres acceder:</p>
+        <div class="atabs">
+          <button class="atab ai" id="ti" onclick="st('i')"><span class="ti">👤</span><span class="tl">Invitado</span></button>
+          <button class="atab" id="ta" onclick="st('a')"><span class="ti">🏠</span><span class="tl">Adoptante</span></button>
+          <button class="atab" id="tw" onclick="st('w')"><span class="ti">🩺</span><span class="tl">Trabajador</span></button>
+        </div>
+
+        <!-- INVITADO -->
+        <div class="lpanel on" id="pi">
+          <div class="text-center py-2"><div style="font-size:2.7rem;margin-bottom:10px">🐾</div>
+            <h3 style="margin-bottom:8px">Acceso sin registro</h3>
+            <p style="font-size:.86rem">Explora los animales disponibles.<br>Para adoptar necesitarás una cuenta.</p></div>
+          <button class="btn btn-v w-100 py-2 mt-2" onclick="enter('i')"><i class="bi bi-door-open me-2"></i>Entrar como invitado</button>
+        </div>
+
+        <!-- ADOPTANTE -->
+        <div class="lpanel" id="pa">
+          <!-- PERRITO A -->
+          <div class="dwrap"><div class="dbox" id="dboxA">
+            <svg viewBox="0 0 120 108" width="120" height="108" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+              <g class="dtail"><ellipse cx="98" cy="68" rx="6" ry="14" fill="#c8956b" transform="rotate(-30,98,68)"/><ellipse cx="103" cy="57" rx="5" ry="10" fill="#c8956b" transform="rotate(-52,103,57)"/></g>
+              <ellipse cx="60" cy="80" rx="30" ry="21" fill="#d4a574"/>
+              <ellipse cx="60" cy="50" rx="28" ry="26" fill="#d4a574"/>
+              <ellipse cx="33" cy="37" rx="11" ry="17" fill="#b8834e" transform="rotate(-14,33,37)"/>
+              <ellipse cx="87" cy="37" rx="11" ry="17" fill="#b8834e" transform="rotate(14,87,37)"/>
+              <ellipse cx="33" cy="39" rx="7" ry="12" fill="#e8b89a" transform="rotate(-14,33,39)"/>
+              <ellipse cx="87" cy="39" rx="7" ry="12" fill="#e8b89a" transform="rotate(14,87,39)"/>
+              <ellipse cx="60" cy="62" rx="15" ry="11" fill="#c8834a"/>
+              <ellipse cx="60" cy="59" rx="9" ry="6" fill="#e8c0a0"/>
+              <ellipse cx="60" cy="55" rx="5.5" ry="4" fill="#2a1a0e"/>
+              <path d="M54 63 Q60 69 66 63" stroke="#2a1a0e" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <ellipse fill="white" cx="46" cy="47" rx="9" ry="9.5"/>
+              <ellipse fill="white" cx="74" cy="47" rx="9" ry="9.5"/>
+              <g class="dpg" id="dpAL"><ellipse fill="#2a1a0e" cx="46" cy="48" rx="5" ry="5"/><ellipse fill="rgba(255,255,255,.38)" cx="48.2" cy="46" rx="1.8" ry="1.8"/></g>
+              <g class="dpg" id="dpAR"><ellipse fill="#2a1a0e" cx="74" cy="48" rx="5" ry="5"/><ellipse fill="rgba(255,255,255,.38)" cx="76.2" cy="46" rx="1.8" ry="1.8"/></g>
+              <path class="dbrow" id="brAL" d="M39 37 Q46 33 52 36" stroke="#7a4e28" stroke-width="2.5"/>
+              <path class="dbrow" id="brAR" d="M68 36 Q74 33 81 37" stroke="#7a4e28" stroke-width="2.5"/>
+              <g><ellipse cx="41" cy="98" rx="11" ry="7.5" fill="#c8956b"/><ellipse cx="79" cy="98" rx="11" ry="7.5" fill="#c8956b"/><ellipse cx="35.5" cy="97" rx="4" ry="3.2" fill="#b8834e"/><ellipse cx="41" cy="94.5" rx="4" ry="3.2" fill="#b8834e"/><ellipse cx="46.5" cy="97" rx="4" ry="3.2" fill="#b8834e"/><ellipse cx="73.5" cy="97" rx="4" ry="3.2" fill="#b8834e"/><ellipse cx="79" cy="94.5" rx="4" ry="3.2" fill="#b8834e"/><ellipse cx="84.5" cy="97" rx="4" ry="3.2" fill="#b8834e"/></g>
+              <g class="dcover" id="dcA"><ellipse cx="41" cy="49" rx="13" ry="10" fill="#c8956b"/><ellipse cx="79" cy="49" rx="13" ry="10" fill="#c8956b"/><ellipse cx="35" cy="47" rx="4.5" ry="3.5" fill="#b8834e"/><ellipse cx="41" cy="44" rx="4.5" ry="3.5" fill="#b8834e"/><ellipse cx="47" cy="47" rx="4.5" ry="3.5" fill="#b8834e"/><ellipse cx="73" cy="47" rx="4.5" ry="3.5" fill="#b8834e"/><ellipse cx="79" cy="44" rx="4.5" ry="3.5" fill="#b8834e"/><ellipse cx="85" cy="47" rx="4.5" ry="3.5" fill="#b8834e"/></g>
+            </svg>
+          </div><div class="dmsg" id="dmA">¡Hola! Ingresa tus datos 🐾</div></div>
+
+          <div id="fla">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+              <h3 style="font-size:1rem;margin:0">Iniciar sesión</h3>
+              <a href="#" style="color:var(--verde);text-decoration:none;font-size:.8rem" onclick="srA(event)">¿Sin cuenta? Regístrate</a>
+            </div>
+            <div class="mb-3"><label class="flabel">Correo</label>
+              <input type="email" id="lc" class="finput" placeholder="tu@correo.com" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
+            <div class="mb-3"><label class="flabel">Contraseña</label>
+              <input type="password" id="lp" class="finput" placeholder="••••••••" onfocus="dh('A',true)" onblur="dh('A',false)"></div>
+            <button class="btn btn-v w-100 py-2" id="bla" onclick="loginA()"><i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión</button>
+            <div class="lerr" id="ela"></div>
+          </div>
+
+          <div id="fra" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+              <h3 style="font-size:1rem;margin:0">Crear cuenta</h3>
+              <a href="#" style="color:var(--verde);text-decoration:none;font-size:.8rem" onclick="slA(event)">Ya tengo cuenta</a>
+            </div>
+            <div class="row g-2">
+              <div class="col-12"><label class="flabel">Nombre completo</label>
+                <input type="text" id="rn" class="finput" placeholder="María García" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
+              <div class="col-12"><label class="flabel">Teléfono</label>
+                <input type="tel" id="rt" class="finput" placeholder="55 1234 5678" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
+              <div class="col-12"><label class="flabel">Correo</label>
+                <input type="email" id="rc" class="finput" placeholder="tu@correo.com" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
+              <div class="col-12"><label class="flabel">Contraseña</label>
+                <input type="password" id="rp" class="finput" placeholder="Mínimo 6 caracteres" onfocus="dh('A',true)" onblur="dh('A',false)"></div>
+            </div>
+            <button class="btn btn-v w-100 py-2 mt-3" id="bra" onclick="regA()"><i class="bi bi-person-plus me-2"></i>Registrar cuenta</button>
+            <div class="lerr" id="era"></div>
+            <div class="smsg" id="ora">✓ ¡Cuenta creada! Ahora puedes iniciar sesión.</div>
+          </div>
+        </div>
+
+        <!-- TRABAJADOR -->
+        <div class="lpanel" id="pw">
+          <!-- PERRITO W (con gorrita) -->
+          <div class="dwrap"><div class="dbox" id="dboxW">
+            <svg viewBox="0 0 120 108" width="120" height="108" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+              <g class="dtail"><ellipse cx="98" cy="68" rx="6" ry="14" fill="#a07850" transform="rotate(-30,98,68)"/><ellipse cx="103" cy="57" rx="5" ry="10" fill="#a07850" transform="rotate(-52,103,57)"/></g>
+              <ellipse cx="60" cy="80" rx="30" ry="21" fill="#b8946a"/>
+              <ellipse cx="60" cy="50" rx="28" ry="26" fill="#b8946a"/>
+              <ellipse cx="33" cy="37" rx="11" ry="17" fill="#9a7048" transform="rotate(-14,33,37)"/>
+              <ellipse cx="87" cy="37" rx="11" ry="17" fill="#9a7048" transform="rotate(14,87,37)"/>
+              <ellipse cx="33" cy="39" rx="7" ry="12" fill="#d4a882" transform="rotate(-14,33,39)"/>
+              <ellipse cx="87" cy="39" rx="7" ry="12" fill="#d4a882" transform="rotate(14,87,39)"/>
+              <rect x="34" y="24" width="52" height="11" rx="5" fill="#3d6b4f"/>
+              <rect x="28" y="31" width="64" height="7" rx="3.5" fill="#2d5040"/>
+              <rect x="22" y="33" width="18" height="6" rx="3" fill="#2d5040"/>
+              <ellipse cx="60" cy="62" rx="15" ry="11" fill="#a07040"/>
+              <ellipse cx="60" cy="59" rx="9" ry="6" fill="#d4a882"/>
+              <ellipse cx="60" cy="55" rx="5.5" ry="4" fill="#1e140a"/>
+              <path d="M54 63 Q60 69 66 63" stroke="#1e140a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <ellipse fill="white" cx="46" cy="47" rx="9" ry="9.5"/>
+              <ellipse fill="white" cx="74" cy="47" rx="9" ry="9.5"/>
+              <g class="dpg" id="dpWL"><ellipse fill="#1e140a" cx="46" cy="48" rx="5" ry="5"/><ellipse fill="rgba(255,255,255,.38)" cx="48.2" cy="46" rx="1.8" ry="1.8"/></g>
+              <g class="dpg" id="dpWR"><ellipse fill="#1e140a" cx="74" cy="48" rx="5" ry="5"/><ellipse fill="rgba(255,255,255,.38)" cx="76.2" cy="46" rx="1.8" ry="1.8"/></g>
+              <path class="dbrow" id="brWL" d="M39 37 Q46 33 52 36" stroke="#5a3a18" stroke-width="2.5"/>
+              <path class="dbrow" id="brWR" d="M68 36 Q74 33 81 37" stroke="#5a3a18" stroke-width="2.5"/>
+              <g><ellipse cx="41" cy="98" rx="11" ry="7.5" fill="#a07850"/><ellipse cx="79" cy="98" rx="11" ry="7.5" fill="#a07850"/><ellipse cx="35.5" cy="97" rx="4" ry="3.2" fill="#9a7048"/><ellipse cx="41" cy="94.5" rx="4" ry="3.2" fill="#9a7048"/><ellipse cx="46.5" cy="97" rx="4" ry="3.2" fill="#9a7048"/><ellipse cx="73.5" cy="97" rx="4" ry="3.2" fill="#9a7048"/><ellipse cx="79" cy="94.5" rx="4" ry="3.2" fill="#9a7048"/><ellipse cx="84.5" cy="97" rx="4" ry="3.2" fill="#9a7048"/></g>
+              <g class="dcover" id="dcW"><ellipse cx="41" cy="49" rx="13" ry="10" fill="#a07850"/><ellipse cx="79" cy="49" rx="13" ry="10" fill="#a07850"/><ellipse cx="35" cy="47" rx="4.5" ry="3.5" fill="#9a7048"/><ellipse cx="41" cy="44" rx="4.5" ry="3.5" fill="#9a7048"/><ellipse cx="47" cy="47" rx="4.5" ry="3.5" fill="#9a7048"/><ellipse cx="73" cy="47" rx="4.5" ry="3.5" fill="#9a7048"/><ellipse cx="79" cy="44" rx="4.5" ry="3.5" fill="#9a7048"/><ellipse cx="85" cy="47" rx="4.5" ry="3.5" fill="#9a7048"/></g>
+            </svg>
+          </div><div class="dmsg" id="dmW">Acceso exclusivo para personal 🩺</div></div>
+          <h3 style="font-size:1rem;margin-bottom:4px">Acceso de personal</h3>
+          <p style="font-size:.82rem;margin-bottom:13px">Usa tus credenciales de empleado.</p>
+          <div class="mb-3"><label class="flabel">Número de identificación</label>
+            <input type="text" id="wi" class="finput" placeholder="Ej. EMP-001" onfocus="dt(this,'W')" oninput="dt(this,'W')" onblur="dr('W')"></div>
+          <div class="mb-3"><label class="flabel">Contraseña</label>
+            <input type="password" id="wp" class="finput" placeholder="••••••••" onfocus="dh('W',true)" onblur="dh('W',false)"></div>
+          <button class="btn btn-t w-100 py-2" id="blw" onclick="loginW()"><i class="bi bi-shield-lock me-2"></i>Acceder al sistema</button>
+          <div class="lerr" id="elw"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PÁGINA PRINCIPAL -->
+<div id="pmain">
+  <nav class="mnav navbar navbar-expand-md">
+    <div class="container">
+      <a class="nlogo navbar-brand" href="#">Patitas Felices</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mnv"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="mnv">
+        <ul class="navbar-nav ms-auto align-items-center gap-1">
+          <li class="nav-item"><a class="nav-link" href="#animales">Animales</a></li>
+          <li class="nav-item"><a class="nav-link" href="#adoptar">Adoptar</a></li>
+          <li class="nav-item reg-sect"><a class="nav-link" href="#registrar">Registrar</a></li>
+          <li class="nav-item w-only"><a class="nav-link" href="#" onclick="goAdm()" style="color:var(--tierra)!important;font-weight:500"><i class="bi bi-speedometer2"></i> Admin</a></li>
+          <li class="nav-item ms-2"><span class="rbadge" id="nbadge">—</span></li>
+          <li class="nav-item ms-1"><button class="btn btn-ov btn-sm" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Salir</button></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <p class="eyebrow fade-up d1">Centro de adopción animal · CDMX</p>
+          <h1 class="fade-up d2" style="margin-bottom:18px">Un hogar para cada<br><em style="font-style:italic;color:var(--verde)">patita.</em></h1>
+          <p style="font-size:1.03rem;margin-bottom:34px;max-width:420px;line-height:1.82;" class="fade-up d3">Rescatamos, cuidamos y conectamos animales con familias que los esperan.</p>
+          <div class="d-flex gap-3 flex-wrap fade-up d4">
+            <a href="#animales" class="btn btn-v px-4 py-2">Ver animales disponibles</a>
+            <a href="#adoptar" class="btn btn-ov px-4 py-2">¿Cómo adoptar?</a>
+          </div>
+          <div class="hstats fade-up d5">
+            <div class="row g-4">
+              <div class="col-auto"><div class="snum" id="hAdop">—<em>+</em></div><div class="slbl">Adopciones exitosas</div></div>
+              <div class="col-auto"><div class="snum" id="hDisp">—</div><div class="slbl">Animales disponibles</div></div>
+              <div class="col-auto"><div class="snum">12</div><div class="slbl">Voluntarios activos</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 hvcol fade-up d3"><div id="heroCards"><div class="text-center py-5" style="color:var(--txt-3)">Cargando...</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="animales" class="sect-alt py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <p class="slabel c">Nuestros animales</p>
+        <h2>Esperando un hogar</h2>
+        <p class="mx-auto" style="max-width:450px">Cada uno tiene su propia historia. Quizás la tuya sea el siguiente capítulo.</p>
+      </div>
+      <div class="d-flex gap-2 flex-wrap mb-4">
+        <button class="fbtn act" data-f="all">Todos</button>
+        <button class="fbtn" data-f="perro">Perros</button>
+        <button class="fbtn" data-f="gato">Gatos</button>
+        <button class="fbtn" data-f="ave">Aves</button>
+        <button class="fbtn" data-f="disp">Solo disponibles</button>
+      </div>
+      <div class="row g-4" id="agrid"><div class="col-12 text-center py-5" style="color:var(--txt-3)"><span class="spin" style="border-color:rgba(61,107,79,.3);border-top-color:var(--verde)"></span> Cargando...</div></div>
+      <div id="aviso" class="text-center mt-4 p-4" style="display:none;background:rgba(61,107,79,.07);border-radius:var(--radius-lg);border:1px dashed var(--line-2)">
+        <p style="margin:0;font-size:.89rem">👆 Para adoptar necesitas <a href="#" style="color:var(--verde);text-decoration:none;font-weight:500" onclick="rm()">crear una cuenta de adoptante</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="adoptar" class="sect-wht py-5">
+    <div class="container">
+      <div class="row g-5 align-items-start">
+        <div class="col-lg-6">
+          <p class="slabel">El proceso</p>
+          <h2 style="margin-bottom:13px">Adoptar es<br><em style="color:var(--verde);font-style:italic">sencillo.</em></h2>
+          <p style="margin-bottom:30px">Te acompañamos en cada paso para que sea la mejor experiencia.</p>
+          <div class="step"><div class="stepn">01</div><div class="stept"><strong>Explora y elige</strong><span>Revisa el catálogo y encuentra al animal que conecte contigo.</span></div></div>
+          <div class="step"><div class="stepn">02</div><div class="stept"><strong>Llena la solicitud</strong><span>Completa el formulario con tus datos y el animal deseado.</span></div></div>
+          <div class="step"><div class="stepn">03</div><div class="stept"><strong>Entrevista</strong><span>Nuestro equipo valida que el hogar sea el adecuado.</span></div></div>
+          <div class="step"><div class="stepn">04</div><div class="stept"><strong>¡Bienvenido a casa!</strong><span>El animal llega y realizamos seguimiento post-adopción.</span></div></div>
+        </div>
+        <div class="col-lg-6">
+          <div id="fadop" class="fcard" style="display:none">
+            <h3>Solicitud de adopción</h3>
+            <p style="margin-bottom:20px;font-size:.85rem">Te contactamos en menos de 24 horas.</p>
+            <form onsubmit="sendAdopt(event)">
+              <div class="mb-3"><label class="flabel">Animal de interés</label><select id="selAnimal" class="finput" required><option value="">Selecciona un animal...</option></select></div>
+              <div class="mb-3"><label class="flabel">¿Por qué quieres adoptar?</label><textarea id="motivo" class="finput" placeholder="Cuéntanos sobre tu hogar..."></textarea></div>
+              <button type="submit" class="btn btn-v w-100 py-2" id="bAdopt">Enviar solicitud</button>
+              <div class="smsg" id="okAdopt">✓ ¡Solicitud enviada! Te contactaremos muy pronto.</div>
+              <div class="emsg" id="erAdopt"></div>
+            </form>
+          </div>
+          <div id="aaviso" class="fcard text-center" style="display:none">
+            <div style="font-size:2.7rem;margin-bottom:13px">🔐</div>
+            <h3 style="margin-bottom:9px">Inicia sesión para adoptar</h3>
+            <p style="margin-bottom:20px">Necesitas una cuenta para enviar solicitudes.</p>
+            <button class="btn btn-v px-4 py-2" onclick="rm()">Crear cuenta / Iniciar sesión</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="registrar" class="reg-sect py-5 sect-alt">
+    <div class="container">
+      <div class="text-center mb-5"><p class="slabel c">Base de datos</p><h2>Registrar animal</h2><p class="mx-auto" style="max-width:450px">¿Encontraste un animal? Agrégalo al sistema.</p></div>
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="apicard">
+            <h3 class="mb-4">Nuevo ingreso</h3>
+            <div class="mb-3"><label class="flabel">Nombre</label><input type="text" id="rna" class="finput" placeholder="Ej. Firulais"></div>
+            <div class="row g-3 mb-3">
+              <div class="col-6"><label class="flabel">Especie</label><select id="res" class="finput"><option value="perro">Perro</option><option value="gato">Gato</option><option value="ave">Ave</option><option value="otro">Otro</option></select></div>
+              <div class="col-6"><label class="flabel">Edad</label><input type="text" id="red" class="finput" placeholder="Ej. 2 años"></div>
+            </div>
+            <div class="row g-3 mb-4">
+              <div class="col-6"><label class="flabel">Sexo</label><select id="rsex" class="finput"><option value="macho">Macho</option><option value="hembra">Hembra</option><option value="desconocido">Desconocido</option></select></div>
+              <div class="col-6"><label class="flabel">Emoji</label><input type="text" id="rem" class="finput" placeholder="🐾" maxlength="2"></div>
+            </div>
+            <button class="btn btn-v w-100 py-2" id="bReg" onclick="regAnimal()"><i class="bi bi-plus-circle me-2"></i>Registrar en la base de datos</button>
+            <div class="smsg" id="okReg">✓ Animal registrado correctamente.</div>
+            <div class="emsg" id="erReg"></div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="apicard"><h3>Animales <span class="cbadge" id="cbdg"></span></h3><ul class="litems mt-3" id="lista"><li class="lempty">Cargando...</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer">
+    <div class="container">
+      <div class="row g-5 pb-4" style="border-bottom:1px solid rgba(255,255,255,.07)">
+        <div class="col-lg-5 fbrand">
+          <a href="#" class="flogo d-flex align-items-center gap-2 mb-3">
+            <svg width="20" height="20" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="34" rx="10" ry="8" fill="#f4f0e8" opacity=".7"/><ellipse cx="13" cy="24" rx="5" ry="7" fill="#f4f0e8" opacity=".55"/><ellipse cx="35" cy="24" rx="5" ry="7" fill="#f4f0e8" opacity=".55"/><ellipse cx="17" cy="14" rx="4" ry="5" fill="#f4f0e8" opacity=".4"/><ellipse cx="31" cy="14" rx="4" ry="5" fill="#f4f0e8" opacity=".4"/></svg>
+            Patitas Felices
+          </a>
+          <p>Centro de adopción comprometido con el bienestar animal. Cada vida merece un hogar.</p>
+        </div>
+        <div class="col-6 col-lg-3 fcol"><h4>Navegación</h4><a href="#animales">Animales</a><a href="#adoptar">Adopción</a><a href="#registrar">Registrar</a></div>
+        <div class="col-6 col-lg-4 fcol"><h4>Equipo</h4><a href="#">Gudiño Luna Josué Ethianne</a><a href="#">Mendoza Nieto Oscar Osvaldo</a><a href="#">Avila Mendoza Natalia</a></div>
+      </div>
+      <div class="fbot d-flex justify-content-between flex-wrap gap-2">
+        <span>© 2025 Patitas Felices — IPN ESCOM · Bases de Datos</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- PÁGINA ADMIN -->
+<div id="padmin">
+  <nav class="anav">
+    <span class="abrand">🩺 Panel Administrativo</span>
+    <span class="ms-auto d-flex align-items-center gap-3">
+      <span class="rbadge rb-trb" id="abadge"></span>
+      <button class="btn btn-ov btn-sm" onclick="goMain()"><i class="bi bi-house"></i> Sitio</button>
+      <button class="btn btn-t btn-sm" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Salir</button>
+    </span>
+  </nav>
+  <div class="alayout">
+    <aside class="aside">
+      <div class="aslogo"><span class="asname">Patitas Felices</span><span class="assub">Sistema interno</span></div>
+      <div class="asnav">
+        <div class="assec">Principal</div>
+        <button class="snb on" onclick="sp('dash',this)"><i class="bi bi-speedometer2"></i> Dashboard</button>
+        <button class="snb" onclick="sp('solic',this)"><i class="bi bi-clipboard-check"></i> Solicitudes</button>
+        <button class="snb" onclick="sp('anim',this)"><i class="bi bi-paw"></i> Animales</button>
+        <div class="assec">Gestión</div>
+        <button class="snb" onclick="sp('adpts',this)"><i class="bi bi-people"></i> Adoptantes</button>
+        <button class="snb" onclick="sp('med',this)"><i class="bi bi-heart-pulse"></i> Historial médico</button>
+        <button class="snb" onclick="sp('regadm',this)"><i class="bi bi-plus-square"></i> Registrar animal</button>
+        <div class="assec">Sistema</div>
+        <button class="snb" onclick="sp('cfg',this)"><i class="bi bi-gear"></i> Configuración</button>
+        <button class="snb mt-2" onclick="goMain()"><i class="bi bi-arrow-left-circle"></i> Volver al sitio</button>
+      </div>
+    </aside>
+    <main class="acontent">
+
+      <!-- DASHBOARD -->
+      <div class="apanel on" id="ap-dash">
+        <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
+          <div><h2 style="font-size:1.7rem;margin-bottom:2px">Dashboard</h2><p style="font-size:.83rem;margin:0">Bienvenido al panel de administración</p></div>
+          <small style="color:var(--txt-3)" id="aFecha"></small>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-xl-3"><div class="scard"><span class="sci">🐾</span><div class="scn" id="sT">—</div><div class="scl">Animales en sistema</div></div></div>
+          <div class="col-6 col-xl-3"><div class="scard"><span class="sci">✅</span><div class="scn" id="sD">—</div><div class="scl">Disponibles adopción</div></div></div>
+          <div class="col-6 col-xl-3"><div class="scard"><span class="sci">📋</span><div class="scn" id="sS">—</div><div class="scl">Solicitudes pendientes</div></div></div>
+          <div class="col-6 col-xl-3"><div class="scard"><span class="sci">👥</span><div class="scn" id="sA">—</div><div class="scl">Adoptantes registrados</div></div></div>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-7"><div class="apicard h-100"><h3 style="font-size:.97rem;margin-bottom:13px">Solicitudes recientes</h3><div id="dSolic"><div class="lempty">Cargando...</div></div></div></div>
+          <div class="col-lg-5"><div class="apicard h-100"><h3 style="font-size:.97rem;margin-bottom:13px">En tratamiento 🩺</h3><div id="dTrat"><div class="lempty">Cargando...</div></div><button class="btn btn-ov btn-sm w-100 mt-3" onclick="sp('med',document.querySelectorAll('.snb')[4])">Ver historial</button></div></div>
+        </div>
+      </div>
+
+      <!-- SOLICITUDES -->
+      <div class="apanel" id="ap-solic">
+        <h2 style="font-size:1.7rem;margin-bottom:4px">Solicitudes de adopción</h2>
+        <p style="font-size:.83rem;margin-bottom:18px">Gestiona las solicitudes del sistema</p>
+        <div class="apicard"><div style="overflow-x:auto">
+          <table class="ctbl"><thead><tr><th>Solicitante</th><th>Animal</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="tbS"><tr><td colspan="5" style="text-align:center;color:var(--txt-3);padding:22px">Cargando...</td></tr></tbody></table>
+        </div></div>
+      </div>
+
+      <!-- ANIMALES -->
+      <div class="apanel" id="ap-anim">
+        <h2 style="font-size:1.7rem;margin-bottom:4px">Gestión de animales</h2>
+        <p style="font-size:.83rem;margin-bottom:18px">Catálogo completo del refugio</p>
+        <div class="apicard"><div style="overflow-x:auto">
+          <table class="ctbl"><thead><tr><th></th><th>Nombre</th><th>Raza</th><th>Edad</th><th>Estado</th><th>Ingreso</th><th></th></tr></thead>
+          <tbody id="tbA"><tr><td colspan="7" style="text-align:center;color:var(--txt-3);padding:22px">Cargando...</td></tr></tbody></table>
+        </div>
+        <button class="btn btn-v mt-3" onclick="sp('regadm',document.querySelectorAll('.snb')[5])"><i class="bi bi-plus me-1"></i>Agregar animal</button>
+        </div>
+      </div>
+
+      <!-- ADOPTANTES -->
+      <div class="apanel" id="ap-adpts">
+        <h2 style="font-size:1.7rem;margin-bottom:4px">Directorio de adoptantes</h2>
+        <p style="font-size:.83rem;margin-bottom:18px">Usuarios registrados en el sistema</p>
+        <div class="apicard"><div style="overflow-x:auto">
+          <table class="ctbl"><thead><tr><th>#</th><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Registro</th><th>Estado</th></tr></thead>
+          <tbody id="tbAd"><tr><td colspan="6" style="text-align:center;color:var(--txt-3);padding:22px">Cargando...</td></tr></tbody></table>
+        </div></div>
+      </div>
+
+      <!-- HISTORIAL MÉDICO -->
+      <div class="apanel" id="ap-med">
+        <h2 style="font-size:1.7rem;margin-bottom:4px">Historial médico</h2>
+        <p style="font-size:.83rem;margin-bottom:18px">Registros veterinarios del refugio</p>
+        <div class="row g-4">
+          <div class="col-lg-5"><div class="apicard">
+            <h3 style="font-size:.97rem;margin-bottom:13px">Nuevo registro</h3>
+            <div class="mb-3"><label class="flabel">Animal</label><select id="mAnim" class="finput"></select></div>
+            <div class="mb-3"><label class="flabel">Tipo</label><select id="mTipo" class="finput"><option value="vacuna">Vacuna</option><option value="desparasitacion">Desparasitación</option><option value="cirugia">Cirugía</option><option value="revision">Revisión general</option><option value="tratamiento">Tratamiento</option></select></div>
+            <div class="mb-3"><label class="flabel">Veterinario</label><input type="text" id="mVet" class="finput" placeholder="Dr. Vega"></div>
+            <div class="mb-3"><label class="flabel">Fecha</label><input type="date" id="mFech" class="finput"></div>
+            <div class="mb-3"><label class="flabel">Notas</label><textarea id="mNota" class="finput" placeholder="Observaciones..."></textarea></div>
+            <button class="btn btn-v w-100 py-2" id="bMed" onclick="saveMed()"><i class="bi bi-plus-circle me-2"></i>Guardar registro</button>
+            <div class="smsg" id="okMed">✓ Registro guardado.</div>
+            <div class="emsg" id="erMed"></div>
+          </div></div>
+          <div class="col-lg-7"><div class="apicard">
+            <h3 style="font-size:.97rem;margin-bottom:13px">Registros recientes</h3>
+            <div style="overflow-x:auto">
+              <table class="ctbl"><thead><tr><th>Animal</th><th>Tipo</th><th>Fecha</th><th>Veterinario</th></tr></thead>
+              <tbody id="tbH"><tr><td colspan="4" style="text-align:center;color:var(--txt-3);padding:22px">Cargando...</td></tr></tbody></table>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- REGISTRAR ANIMAL ADMIN -->
+      <div class="apanel" id="ap-regadm">
+        <h2 style="font-size:1.7rem;margin-bottom:4px">Registrar nuevo animal</h2>
+        <p style="font-size:.83rem;margin-bottom:18px">Agrega un animal al sistema del refugio</p>
+        <div class="row g-4">
+          <div class="col-lg-7"><div class="apicard">
+            <div class="row g-3">
+              <div class="col-6"><label class="flabel">Nombre</label><input type="text" id="aNom" class="finput" placeholder="Nombre del animal"></div>
+              <div class="col-6"><label class="flabel">Raza</label><input type="text" id="aRaz" class="finput" placeholder="Ej. Labrador"></div>
+              <div class="col-6"><label class="flabel">Especie</label><select id="aEsp" class="finput"><option value="perro">Perro</option><option value="gato">Gato</option><option value="ave">Ave</option><option value="otro">Otro</option></select></div>
+              <div class="col-6"><label class="flabel">Edad</label><input type="text" id="aEd" class="finput" placeholder="Ej. 2 años"></div>
+              <div class="col-6"><label class="flabel">Sexo</label><select id="aSex" class="finput"><option value="macho">Macho</option><option value="hembra">Hembra</option><option value="desconocido">Desconocido</option></select></div>
+              <div class="col-6"><label class="flabel">Emoji</label><input type="text" id="aEmo" class="finput" placeholder="🐾" maxlength="2"></div>
+              <div class="col-12"><label class="flabel">Estado inicial</label><select id="aEst" class="finput"><option value="disponible">Disponible</option><option value="tratamiento">En tratamiento</option></select></div>
+              <div class="col-12"><label class="flabel">Descripción</label><textarea id="aDes" class="finput" placeholder="Personalidad, historia, necesidades especiales..."></textarea></div>
+            </div>
+            <button class="btn btn-v w-100 py-2 mt-3" id="bAReg" onclick="saveAdmAnimal()"><i class="bi bi-plus-circle me-2"></i>Registrar animal</button>
+            <div class="smsg" id="okAReg">✓ Animal registrado correctamente.</div>
+            <div class="emsg" id="erAReg"></div>
+          </div></div>
+          <div class="col-lg-5"><div class="apicard">
+            <h3 style="font-size:.97rem;margin-bottom:11px">En sistema <span class="cbadge" id="cadm"></span></h3>
+            <ul class="litems" id="ladm"><li class="lempty">Cargando...</li></ul>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- CONFIG -->
+      <div class="apanel" id="ap-cfg">
+        <h2 style="font-size:1.7rem;margin-bottom:4px">Configuración</h2>
+        <p style="font-size:.83rem;margin-bottom:18px">Ajustes del sistema</p>
+        <div class="row g-4">
+          <div class="col-lg-5"><div class="apicard">
+            <h3 style="font-size:.97rem;margin-bottom:13px">Personal del sistema</h3>
+            <div id="lPersonal"><div class="lempty">Cargando...</div></div>
+          </div></div>
+          <div class="col-lg-7"><div class="apicard">
+            <h3 style="font-size:.97rem;margin-bottom:13px">URL del servidor API</h3>
+            <p style="font-size:.83rem;margin-bottom:14px">Cambia esto cuando despliegues en Railway.</p>
+            <div class="mb-3"><label class="flabel">URL actual</label><input type="text" id="cfgUrl" class="finput"></div>
+            <button class="btn btn-v btn-sm px-4" onclick="saveUrl()">Guardar URL</button>
+            <div class="smsg" id="okCfg" style="margin-top:9px">✓ URL actualizada. Recargando datos...</div>
+          </div></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+let API = localStorage.getItem('pf_api') || 'https://patitas-backend-production.up.railway.app';
+
+const ME = document.getElementById('lmodal');
+const M  = new bootstrap.Modal(ME,{backdrop:'static',keyboard:false});
+const g  = id => document.getElementById(id);
+let S = {rol:null,id:null,nombre:null};
+
+// ── API helper ──────────────────────────────
+async function api(path,o={}){
+  const r = await fetch(API+path,{headers:{'Content-Type':'application/json'},...o});
+  return r.json();
+}
+function bl(id,on,txt=''){
+  const b=g(id);if(!b)return;
+  if(on){b.disabled=true;b.dataset.o=b.innerHTML;b.innerHTML=`<span class="spin"></span>${txt||'...'}`;}
+  else{b.disabled=false;b.innerHTML=b.dataset.o||txt;}
+}
+function sm(id,txt,t='s'){
+  const e=g(id);if(!e)return;
+  e.className=t==='s'?'smsg':'emsg';e.textContent=txt;e.style.display='block';
+}
+function hm(id){const e=g(id);if(e)e.style.display='none';}
+function elbl(s){return{disponible:'Disponible',tratamiento:'En tratamiento',adoptado:'Adoptado'}[s]||s;}
+function fmt(d){return d?new Date(d).toLocaleDateString('es-MX'):'—';}
+
+// ── TABS ───────────────────────────────────
+function st(k){
+  ['i','a','w'].forEach(x=>{g('t'+x).className='atab';g('p'+x).classList.remove('on');});
+  g('t'+k).classList.add({i:'ai',a:'aa',w:'at'}[k]);
+  g('p'+k).classList.add('on');
+}
+
+// ── PERRITO ─────────────────────────────────
+function dt(inp,who){
+  const box=g('dbox'+who);if(!box)return;
+  const br=box.getBoundingClientRect(),ir=inp.getBoundingClientRect();
+  const tx=ir.left+ir.width/2-(br.left+br.width/2);
+  const ty=ir.top+ir.height/2-(br.top+br.height/2);
+  const ang=Math.atan2(ty,tx),d=Math.min(Math.hypot(tx,ty),80);
+  sp2(Math.cos(ang)*d*.038,Math.sin(ang)*d*.038,who);
+  sb(Math.min((inp.value||'').length/18,1),who);
+  const m=g('dm'+who);if(m)m.textContent=(inp.value||'').length>3?'¡Lo estoy viendo! 👀':(who==='A'?'¡Hola! Ingresa tus datos 🐾':'Acceso para personal 🩺');
+}
+function dr(who){
+  sp2(0,0,who);sb(0,who);
+  const m=g('dm'+who);if(m)m.textContent=who==='A'?'¡Hola! Ingresa tus datos 🐾':'Acceso exclusivo para personal 🩺';
+}
+function dh(who,hide){
+  const c=g('dc'+who);if(c)c.classList.toggle('on',hide);
+  const m=g('dm'+who);if(m)m.textContent=hide?'¡No miro nada, te lo juro! 🙈':(who==='A'?'¡Hola! Ingresa tus datos 🐾':'Acceso exclusivo para personal 🩺');
+}
+function sp2(px,py,who){
+  ['L','R'].forEach(s=>{const gr=g('dp'+who+s);if(gr)gr.setAttribute('transform',`translate(${px},${py})`);});
+}
+function sb(p,who){
+  const l=p*4;
+  const bL=g('br'+who+'L'),bR=g('br'+who+'R');
+  if(bL)bL.setAttribute('d',`M39 ${37-l} Q46 ${33-l} 52 ${36-l}`);
+  if(bR)bR.setAttribute('d',`M68 ${36-l} Q74 ${33-l} 81 ${37-l}`);
+}
+
+// ── ADOPTANTE forms ─────────────────────────
+function srA(e){e.preventDefault();g('fla').style.display='none';g('fra').style.display='block';}
+function slA(e){e.preventDefault();g('fla').style.display='block';g('fra').style.display='none';hm('ora');}
+
+async function regA(){
+  const n=g('rn').value.trim(),t=g('rt').value.trim(),c=g('rc').value.trim(),p=g('rp').value;
+  hm('era');
+  if(!n||!t||!c||!p){sm('era','Todos los campos son obligatorios.','e');return;}
+  if(p.length<6){sm('era','Contraseña mínimo 6 caracteres.','e');return;}
+  bl('bra',true,'Registrando...');
+  try{
+    const r=await api('/adoptantes/registro',{method:'POST',body:JSON.stringify({nombre:n,correo:c,telefono:t,contrasena:p})});
+    if(!r.ok){sm('era',r.error,'e');return;}
+    sm('ora','✓ ¡Cuenta creada! Ahora puedes iniciar sesión.');
+    setTimeout(()=>slA({preventDefault:()=>{}}),1800);
+  }catch{sm('era','Error de conexión con el servidor.','e');}
+  finally{bl('bra',false);}
+}
+
+async function loginA(){
+  const c=g('lc').value.trim(),p=g('lp').value;
+  hm('ela');
+  if(!c||!p){sm('ela','Correo y contraseña requeridos.','e');return;}
+  bl('bla',true,'Verificando...');
+  try{
+    const r=await api('/adoptantes/login',{method:'POST',body:JSON.stringify({correo:c,contrasena:p})});
+    if(!r.ok){sm('ela',r.error,'e');return;}
+    enter('a',r.data.id,r.data.nombre);
+  }catch{sm('ela','Error de conexión con el servidor.','e');}
+  finally{bl('bla',false);}
+}
+
+async function loginW(){
+  const id=g('wi').value.trim(),p=g('wp').value;
+  hm('elw');
+  if(!id||!p){sm('elw','ID y contraseña requeridos.','e');return;}
+  bl('blw',true,'Verificando...');
+  try{
+    const r=await api('/trabajadores/login',{method:'POST',body:JSON.stringify({num_emp:id,contrasena:p})});
+    if(!r.ok){sm('elw',r.error,'e');return;}
+    enter('w',r.data.id,r.data.nombre||id);
+  }catch{sm('elw','Error de conexión con el servidor.','e');}
+  finally{bl('blw',false);}
+}
+
+// ── SESIÓN ──────────────────────────────────
+function enter(rol,id,nombre='Invitado'){
+  S={rol,id,nombre};M.hide();
+  document.body.classList.remove('ri','ra','rw');
+  document.body.classList.add({i:'ri',a:'ra',w:'rw'}[rol]);
+  const lbl={i:'👤 Invitado',a:'🏠 '+nombre,w:'🩺 '+nombre};
+  const cls={i:'rbadge rb-inv',a:'rbadge rb-adp',w:'rbadge rb-trb'};
+  g('nbadge').textContent=lbl[rol];g('nbadge').className=cls[rol];
+  if(rol==='a'||rol==='w'){g('fadop').style.display='block';g('aaviso').style.display='none';}
+  else{g('fadop').style.display='none';g('aaviso').style.display='block';g('aviso').style.display='block';}
+  loadAnimales();loadStats();loadSelAnimal();
+}
+
+function logout(){
+  S={rol:null,id:null,nombre:null};
+  document.body.classList.remove('ri','ra','rw');
+  g('pmain').style.display='block';g('padmin').style.display='none';
+  st('i');M.show();
+}
+function rm(){st('a');M.show();}
+
+// ── ANIMALES ────────────────────────────────
+async function loadAnimales(){
+  const grid=g('agrid'),lst=g('lista');
+  if(grid)grid.innerHTML='<div class="col-12 text-center py-5" style="color:var(--txt-3)"><span class="spin" style="border-color:rgba(61,107,79,.3);border-top-color:var(--verde)"></span> Cargando...</div>';
+  try{
+    const r=await api('/animales');
+    if(!r.ok)throw new Error(r.error);
+    const A=r.data;
+    if(grid){
+      grid.innerHTML=A.length
+        ? A.map(a=>`<div class="col-sm-6 col-lg-4" data-tipo="${a.especie}" data-est="${a.estado}">
+            <div class="acard"><div class="cimg">${a.emoji||'🐾'}</div>
+            <div class="cbody"><div class="cmeta"><h3>${a.nombre}</h3><span class="tag tag-${a.estado}">${elbl(a.estado)}</span></div>
+            <div class="cinfo">${a.raza||a.especie} · ${a.edad||'?'} · ${a.sexo}</div>
+            <div class="d-flex gap-2">${a.estado==='disponible'
+              ?`<button class="btn btn-v btn-sm btn-adp" onclick="irAdoptar(${a.id},'${a.nombre}')">Adoptar</button><button class="btn btn-ov btn-sm">Ver más</button>`
+              :`<button class="btn btn-ov btn-sm" disabled>${a.estado==='adoptado'?'Ya fue adoptado ❤️':'No disponible aún'}</button>`}
+            </div></div></div></div>`).join('')
+        : '<div class="col-12 text-center py-5" style="color:var(--txt-3)">No hay animales registrados.</div>';
+    }
+    if(lst){
+      g('cbdg').textContent=A.length?`(${A.length})`:'';
+      lst.innerHTML=A.length
+        ? A.map(a=>`<li class="litem"><span class="ldot"></span><span>${a.emoji||'🐾'} ${a.nombre}</span><span class="ms-auto tag tag-${a.estado}" style="font-size:.63rem">${elbl(a.estado)}</span></li>`).join('')
+        : '<li class="lempty">Sin animales.</li>';
+    }
+    // hero cards
+    const disp=A.filter(x=>x.estado==='disponible').slice(0,3);
+    const hc=g('heroCards');
+    if(hc&&disp.length){
+      hc.innerHTML=`<div class="row g-3">
+        <div class="col-12"><div class="hcard" style="display:flex;align-items:center;gap:16px">
+          <span style="font-size:3.2rem">${disp[0].emoji||'🐾'}</span>
+          <div><div class="hcard-name">${disp[0].nombre}</div><div class="hcard-info">${disp[0].raza||disp[0].especie} · ${disp[0].edad||'?'} · ${disp[0].sexo}</div><span class="tag tag-disponible">Disponible</span></div>
+        </div></div>
+        ${disp.slice(1).map(a=>`<div class="col-6"><div class="hcard">
+          <div style="font-size:2.5rem;margin-bottom:6px">${a.emoji||'🐾'}</div>
+          <div class="hcard-name">${a.nombre}</div><div class="hcard-info">${a.raza||a.especie} · ${a.edad||'?'}</div>
+          <span class="tag tag-disponible">Disponible</span>
+        </div></div>`).join('')}
+      </div>`;
+    }
+  }catch(e){
+    if(grid)grid.innerHTML=`<div class="col-12 text-center py-5" style="color:var(--tierra)">⚠️ No se pudo conectar al servidor.<br><small>${e.message}</small></div>`;
+  }
+}
+
+function loadSelAnimal(A=null){
+  const sel=g('selAnimal');if(!sel)return;
+  if(A){
+    const d=A.filter(x=>x.estado==='disponible');
+    sel.innerHTML='<option value="">Selecciona...</option>'+d.map(a=>`<option value="${a.id}">${a.emoji||'🐾'} ${a.nombre} — ${a.raza||a.especie}</option>`).join('');
+  } else {
+    api('/animales?estado=disponible').then(r=>{
+      if(!r.ok)return;
+      sel.innerHTML='<option value="">Selecciona...</option>'+r.data.map(a=>`<option value="${a.id}">${a.emoji||'🐾'} ${a.nombre} — ${a.raza||a.especie}</option>`).join('');
+    });
+  }
+}
+
+async function loadStats(){
+  try{
+    const r=await api('/stats');if(!r.ok)return;
+    const d=r.data;
+    const hA=g('hAdop'),hD=g('hDisp');
+    if(hA)hA.innerHTML=`${d.animales.adoptados}<em>+</em>`;
+    if(hD)hD.textContent=d.animales.disponibles;
+  }catch{}
+}
+
+// ── FILTROS ──────────────────────────────────
+document.querySelectorAll('.fbtn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    b.closest('.d-flex').querySelectorAll('.fbtn').forEach(x=>x.classList.remove('act'));
+    b.classList.add('act');
+    const f=b.dataset.f;
+    document.querySelectorAll('#agrid>[data-tipo]').forEach(col=>{
+      if(f==='all')col.style.display='';
+      else if(f==='disp')col.style.display=col.dataset.est==='disponible'?'':'none';
+      else col.style.display=col.dataset.tipo===f?'':'none';
+    });
+  });
+});
+
+// ── SOLICITUD ────────────────────────────────
+async function sendAdopt(e){
+  e.preventDefault();
+  const aid=g('selAnimal').value,mot=g('motivo').value;
+  hm('okAdopt');hm('erAdopt');
+  if(!aid){sm('erAdopt','Selecciona un animal.','e');return;}
+  bl('bAdopt',true,'Enviando...');
+  try{
+    const r=await api('/solicitudes',{method:'POST',body:JSON.stringify({adoptante_id:S.id,animal_id:parseInt(aid),motivo:mot})});
+    if(!r.ok){sm('erAdopt',r.error,'e');return;}
+    sm('okAdopt','✓ ¡Solicitud enviada! Te contactaremos muy pronto.');
+    e.target.reset();
+  }catch{sm('erAdopt','Error de conexión.','e');}
+  finally{bl('bAdopt',false);}
+}
+
+function irAdoptar(id,nombre){
+  if(!S.rol||S.rol==='i'){rm();return;}
+  const sel=g('selAnimal');
+  if(sel){for(let o of sel.options){if(o.value==id){sel.value=o.value;break;}}}
+  g('adoptar').scrollIntoView({behavior:'smooth'});
+}
+
+async function regAnimal(){
+  const n=g('rna').value.trim();
+  hm('okReg');hm('erReg');
+  if(!n){sm('erReg','El nombre es obligatorio.','e');return;}
+  bl('bReg',true,'Registrando...');
+  try{
+    const r=await api('/animales',{method:'POST',body:JSON.stringify({nombre:n,especie:g('res').value,edad:g('red').value,sexo:g('rsex').value,emoji:g('rem').value||'🐾'})});
+    if(!r.ok){sm('erReg',r.error,'e');return;}
+    sm('okReg','✓ Animal registrado.');
+    g('rna').value='';g('red').value='';g('rem').value='';
+    loadAnimales();
+  }catch{sm('erReg','Error de conexión.','e');}
+  finally{bl('bReg',false);}
+}
+
+// ── ADMIN ────────────────────────────────────
+function goAdm(){
+  g('pmain').style.display='none';g('padmin').style.display='block';
+  g('abadge').textContent='🩺 '+S.nombre;
+  g('aFecha').textContent=new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  g('cfgUrl').value=API;
+  loadDash();window.scrollTo(0,0);
+}
+function goMain(){g('pmain').style.display='block';g('padmin').style.display='none';window.scrollTo(0,0);}
+
+function sp(id,btn){
+  document.querySelectorAll('.apanel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.snb').forEach(b=>b.classList.remove('on'));
+  g('ap-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+  ({dash:loadDash,solic:loadSolic,anim:loadAnimAdm,adpts:loadAdpts,med:()=>{loadHist();loadMedSel();},regadm:loadAdmList,cfg:loadCfg})[id]?.();
+}
+
+async function loadDash(){
+  try{
+    const r=await api('/stats');if(!r.ok)return;
+    const d=r.data;
+    g('sT').textContent=d.animales.total;g('sD').textContent=d.animales.disponibles;
+    g('sS').textContent=d.solicitudes.pendientes;g('sA').textContent=d.adoptantes;
+  }catch{}
+  try{
+    const r=await api('/solicitudes');
+    const ds=g('dSolic');
+    if(!r.ok||!r.data.length){if(ds)ds.innerHTML='<div class="lempty">Sin solicitudes aún.</div>';return;}
+    if(ds)ds.innerHTML='<div class="d-flex flex-column gap-2">'+r.data.slice(0,5).map(s=>`
+      <div class="litem"><span class="ldot" style="background:${s.estado==='pendiente'?'var(--tierra)':s.estado==='aprobada'?'var(--verde)':'var(--txt-3)'}"></span>
+      <div><strong>${s.adoptante_nombre}</strong> → ${s.animal_emoji||'🐾'} ${s.animal_nombre}
+      <div style="font-size:.73rem;color:var(--txt-3)">${s.estado} · ${fmt(s.creado_en)}</div></div></div>`).join('')+'</div>';
+  }catch{}
+  try{
+    const r=await api('/animales?estado=tratamiento');
+    const dt=g('dTrat');
+    if(!r.ok||!r.data.length){if(dt)dt.innerHTML='<div class="lempty">Sin animales en tratamiento.</div>';return;}
+    if(dt)dt.innerHTML='<div class="d-flex flex-column gap-2">'+r.data.map(a=>`
+      <div class="litem"><span class="ldot" style="background:var(--tierra)"></span>
+      <div><strong>${a.emoji||'🐾'} ${a.nombre}</strong><div style="font-size:.73rem;color:var(--txt-3)">${a.raza||a.especie} · ${a.edad||'?'}</div></div></div>`).join('')+'</div>';
+  }catch{}
+}
+
+async function loadSolic(){
+  const tb=g('tbS');
+  try{
+    const r=await api('/solicitudes');
+    if(!r.ok||!r.data.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--txt-3);padding:20px">Sin solicitudes.</td></tr>';return;}
+    tb.innerHTML=r.data.map(s=>`<tr>
+      <td><strong>${s.adoptante_nombre}</strong><br><small style="color:var(--txt-3)">${s.adoptante_correo}</small></td>
+      <td>${s.animal_emoji||'🐾'} ${s.animal_nombre}</td>
+      <td>${fmt(s.creado_en)}</td>
+      <td><span class="tag tag-${s.estado}">${s.estado}</span></td>
+      <td>${s.estado==='pendiente'
+        ?`<button class="btn btn-v btn-sm me-1" onclick="cambSolic(${s.id},'aprobada',this)">Aprobar</button><button class="btn btn-ov btn-sm" onclick="cambSolic(${s.id},'rechazada',this)">Rechazar</button>`
+        :`<button class="btn btn-ov btn-sm" disabled>Procesada</button>`}
+      </td></tr>`).join('');
+  }catch{tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--tierra);padding:20px">Error cargando.</td></tr>';}
+}
+
+async function cambSolic(id,estado,btn){
+  btn.disabled=true;btn.textContent='...';
+  try{const r=await api(`/solicitudes/${id}`,{method:'PUT',body:JSON.stringify({estado})});if(r.ok)loadSolic();}
+  catch{btn.disabled=false;}
+}
+
+async function loadAnimAdm(){
+  const tb=g('tbA');
+  try{
+    const r=await api('/animales');if(!r.ok)throw new Error();
+    tb.innerHTML=r.data.map(a=>`<tr>
+      <td style="font-size:1.65rem">${a.emoji||'🐾'}</td>
+      <td><strong>${a.nombre}</strong></td>
+      <td>${a.raza||'—'} <small style="color:var(--txt-3)">(${a.especie})</small></td>
+      <td>${a.edad||'—'}</td>
+      <td><span class="tag tag-${a.estado}">${elbl(a.estado)}</span></td>
+      <td style="font-size:.78rem;color:var(--txt-3)">${fmt(a.ingreso_en)}</td>
+      <td><button class="btn btn-ov btn-sm" onclick="delAnimal(${a.id},'${a.nombre}',this)"><i class="bi bi-trash"></i></button></td>
+    </tr>`).join('');
+  }catch{tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--tierra);padding:20px">Error cargando.</td></tr>';}
+}
+
+async function delAnimal(id,nom,btn){
+  if(!confirm(`¿Eliminar a ${nom}?`))return;
+  btn.disabled=true;
+  try{await api(`/animales/${id}`,{method:'DELETE'});loadAnimAdm();loadAnimales();}
+  catch{btn.disabled=false;}
+}
+
+async function loadAdpts(){
+  const tb=g('tbAd');
+  try{
+    const r=await api('/adoptantes');
+    if(!r.ok||!r.data.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--txt-3);padding:20px">Sin adoptantes.</td></tr>';return;}
+    tb.innerHTML=r.data.map(a=>`<tr>
+      <td style="color:var(--txt-3)">#${a.id}</td>
+      <td><strong>${a.nombre}</strong></td>
+      <td>${a.correo}</td><td>${a.telefono}</td>
+      <td style="font-size:.78rem;color:var(--txt-3)">${fmt(a.creado_en)}</td>
+      <td><span class="tag ${a.activo?'tag-disponible':'tag-adoptado'}">${a.activo?'Activo':'Inactivo'}</span></td>
+    </tr>`).join('');
+  }catch{tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--tierra);padding:20px">Error cargando.</td></tr>';}
+}
+
+async function loadMedSel(){
+  const sel=g('mAnim');if(!sel)return;
+  const r=await api('/animales');if(!r.ok)return;
+  sel.innerHTML=r.data.map(a=>`<option value="${a.id}">${a.emoji||'🐾'} ${a.nombre}</option>`).join('');
+}
+
+async function loadHist(){
+  const tb=g('tbH');
+  try{
+    const r=await api('/historial');
+    if(!r.ok||!r.data.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--txt-3);padding:20px">Sin registros.</td></tr>';return;}
+    tb.innerHTML=r.data.map(h=>`<tr>
+      <td>${h.emoji||'🐾'} <strong>${h.animal_nombre}</strong></td>
+      <td>${h.tipo}</td><td>${fmt(h.fecha)}</td><td>${h.veterinario||'—'}</td>
+    </tr>`).join('');
+  }catch{tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--tierra);padding:20px">Error.</td></tr>';}
+}
+
+async function saveMed(){
+  hm('okMed');hm('erMed');
+  const body={animal_id:parseInt(g('mAnim').value),tipo:g('mTipo').value,veterinario:g('mVet').value,fecha:g('mFech').value,descripcion:g('mNota').value};
+  if(!body.animal_id){sm('erMed','Selecciona un animal.','e');return;}
+  bl('bMed',true,'Guardando...');
+  try{
+    const r=await api('/historial',{method:'POST',body:JSON.stringify(body)});
+    if(!r.ok){sm('erMed',r.error,'e');return;}
+    sm('okMed','✓ Registro médico guardado.');
+    g('mVet').value='';g('mFech').value='';g('mNota').value='';
+    loadHist();
+  }catch{sm('erMed','Error de conexión.','e');}
+  finally{bl('bMed',false);}
+}
+
+async function loadAdmList(){
+  const ul=g('ladm'),bd=g('cadm');if(!ul)return;
+  try{
+    const r=await api('/animales');if(!r.ok)throw new Error();
+    if(bd)bd.textContent=r.data.length?`(${r.data.length})`:'';
+    ul.innerHTML=r.data.length
+      ? r.data.map(a=>`<li class="litem"><span class="ldot"></span>${a.emoji||'🐾'} ${a.nombre}<span class="ms-auto tag tag-${a.estado}" style="font-size:.62rem">${elbl(a.estado)}</span></li>`).join('')
+      : '<li class="lempty">Sin animales.</li>';
+  }catch{ul.innerHTML='<li class="lempty">Error de conexión.</li>';}
+}
+
+async function saveAdmAnimal(){
+  const n=g('aNom').value.trim();
+  hm('okAReg');hm('erAReg');
+  if(!n){sm('erAReg','El nombre es obligatorio.','e');return;}
+  bl('bAReg',true,'Registrando...');
+  try{
+    const r=await api('/animales',{method:'POST',body:JSON.stringify({nombre:n,especie:g('aEsp').value,raza:g('aRaz').value,edad:g('aEd').value,sexo:g('aSex').value,estado:g('aEst').value,descripcion:g('aDes').value,emoji:g('aEmo').value||'🐾'})});
+    if(!r.ok){sm('erAReg',r.error,'e');return;}
+    sm('okAReg','✓ Animal registrado correctamente.');
+    ['aNom','aRaz','aEd','aDes','aEmo'].forEach(x=>g(x).value='');
+    loadAdmList();loadAnimales();
+  }catch{sm('erAReg','Error de conexión.','e');}
+  finally{bl('bAReg',false);}
+}
+
+async function loadCfg(){
+  g('cfgUrl').value=API;
+  try{
+    const r=await api('/trabajadores');
+    const lp=g('lPersonal');
+    if(r.ok&&lp)lp.innerHTML='<div class="d-flex flex-column gap-2">'+r.data.map(t=>`
+      <div class="litem"><span class="ldot" style="background:var(--tierra)"></span>
+      <div><strong>${t.num_emp}</strong> — ${t.nombre}<div style="font-size:.73rem;color:var(--txt-3)">${t.rol}</div></div></div>`).join('')+'</div>';
+  }catch{}
+}
+
+function saveUrl(){
+  const u=g('cfgUrl').value.trim().replace(/\/$/,'');
+  if(!u)return;
+  API=u;localStorage.setItem('pf_api',u);
+  sm('okCfg','✓ URL actualizada. Recargando datos...');
+  setTimeout(()=>{loadAnimales();loadStats();},500);
+}
+
+window.onload=()=>M.show();
+</script>
+</body>
+</html>
