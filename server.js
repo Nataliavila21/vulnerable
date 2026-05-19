@@ -1,4 +1,4 @@
-/ server.js — API REST completa para Patitas Felices
+// server.js — API REST completa para Patitas Felices
 require('dotenv').config();
 
 const express  = require('express');
