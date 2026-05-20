@@ -1,28 +1,34 @@
-// db.js — Pool de conexiones MySQL
-const mysql = require('mysql2/promise');
+// db.js — Pool de conexiones PostgreSQL (Supabase)
+const { Pool } = require('pg');
 require('dotenv').config();
 
-const pool = mysql.createPool({
-  host:               process.env.DB_HOST     || 'localhost',
-  port:               parseInt(process.env.DB_PORT || '3306'),
-  user:               process.env.DB_USER     || 'root',
-  password:           process.env.DB_PASSWORD || '',
-  database:           process.env.DB_NAME     || 'patitas_felices',
-  waitForConnections: true,
-  connectionLimit:    10,
-  queueLimit:         0,
-  timezone:           '-06:00',   // CDMX
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false // Súper importante para conectarse a Supabase de forma segura
+  }
 });
 
-// Verifica conexión al arrancar
-pool.getConnection()
-  .then(conn => {
-    console.log('✅ MySQL conectado correctamente');
-    conn.release();
+// Adaptador para que funcione igual que mysql2 en tu server.js
+const query = async (text, params) => {
+  // pg usa $1, $2 en lugar de ? para los parámetros, así que los reemplazamos al vuelo
+  let pgText = text;
+  if (params && params.length > 0) {
+    let i = 1;
+    pgText = text.replace(/\?/g, () => `$${i++}`);
+  }
+  
+  const res = await pool.query(pgText, params);
+  return [res.rows, res.fields]; // Devolvemos el mismo formato que esperaba mysql2
+};
+
+pool.connect()
+  .then(client => {
+    console.log('✅ PostgreSQL (Supabase) conectado correctamente');
+    client.release();
   })
   .catch(err => {
-    console.error('❌ Error conectando a MySQL:', err.message);
-    process.exit(1);
+    console.error('❌ Error conectando a Supabase:', err.message);
   });
 
-module.exports = pool;
+module.exports = { query };
