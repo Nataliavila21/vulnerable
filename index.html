@@ -221,9 +221,9 @@
             </div>
             <div class="row g-2">
               <div class="col-12"><label class="flabel">Nombre completo</label>
-                <input type="text" id="rn" class="finput" placeholder="María García" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
+                <input type="text" id="rn" class="finput" placeholder="María García" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo letras y espacios, sin números" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
               <div class="col-12"><label class="flabel">Teléfono</label>
-                <input type="tel" id="rt" class="finput" placeholder="55 1234 5678" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
+                <input type="tel" id="rt" class="finput" placeholder="5512345678 (10 dígitos)" pattern="\d{10}" maxlength="10" title="Exactamente 10 dígitos numéricos, sin espacios ni guiones" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
               <div class="col-12"><label class="flabel">Correo</label>
                 <input type="email" id="rc" class="finput" placeholder="tu@correo.com" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
               <div class="col-12"><label class="flabel">Contraseña</label>
@@ -568,8 +568,8 @@
             <hr style="border-color:var(--line);margin:16px 0">
             <h3 style="font-size:.97rem;margin-bottom:13px">Añadir trabajador</h3>
             <div class="mb-2"><label class="flabel">N° empleado</label><input type="text" id="tNumEmp" class="finput" placeholder="Ej. EMP-004"></div>
-            <div class="mb-2"><label class="flabel">Nombre completo</label><input type="text" id="tNombre" class="finput" placeholder="Nombre completo"></div>
-            <div class="mb-2"><label class="flabel">Rol</label><select id="tRol" class="finput"><option value="veterinario">Veterinario</option><option value="admin">Administrador</option></select></div>
+            <div class="mb-2"><label class="flabel">Nombre completo</label><input type="text" id="tNombre" class="finput" placeholder="Nombre completo" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo letras y espacios, sin números"></div>
+            <div class="mb-2"><label class="flabel">Rol</label><select id="tRol" class="finput"><option value="veterinario">Veterinario</option><option value="admin">Administrador</option><option value="voluntario">Voluntario</option></select></div>
             <div class="mb-3"><label class="flabel">Contraseña</label><input type="password" id="tPass" class="finput" placeholder="Mín. 6 caracteres"></div>
             <button class="btn btn-v btn-sm w-100" id="bTrab" onclick="registrarTrabajador()"><i class="bi bi-person-plus me-1"></i>Guardar trabajador</button>
             <div class="smsg" id="okTrab"></div>
