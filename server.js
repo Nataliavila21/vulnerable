@@ -114,12 +114,24 @@ app.delete('/animales/:id', async (req, res) => {
 //  ADOPTANTES — Registro y Login
 // ═══════════════════════════════════════════════════════════
 
-// POST /adoptantes/registro
+// POST /adoptantes/registro — Con validaciones estrictas
 app.post('/adoptantes/registro', async (req, res) => {
   try {
     const { nombre, correo, telefono, contrasena } = req.body;
     if (!nombre || !correo || !telefono || !contrasena)
       return err(res, 'Todos los campos son obligatorios');
+
+    // ─── VALIDACIONES CON EXPRESIONES REGULARES ───
+    const regexNombre   = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    const regexCorreo   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regexTelefono = /^\d{10}$/;
+
+    if (!regexNombre.test(nombre))
+      return err(res, 'El nombre no puede contener números ni caracteres especiales');
+    if (!regexCorreo.test(correo))
+      return err(res, 'El formato de correo electrónico no es válido');
+    if (!regexTelefono.test(telefono))
+      return err(res, 'El número de teléfono debe tener exactamente 10 dígitos');
     if (contrasena.length < 6)
       return err(res, 'La contraseña debe tener al menos 6 caracteres');
 
@@ -357,11 +369,22 @@ app.get('/stats', async (_req, res) => {
   }
 });
 
-// POST /trabajadores — Registrar nuevo trabajador desde el dashboard
+// POST /trabajadores — Registrar nuevo personal desde el dashboard
 app.post('/trabajadores', async (req, res) => {
   try {
     const { num_emp, nombre, rol, contrasena } = req.body;
     if (!num_emp || !nombre || !rol || !contrasena) return err(res, 'Todos los campos son obligatorios');
+
+    // ─── VALIDACIONES ───
+    const rolesPermitidos = ['admin', 'veterinario', 'voluntario'];
+    if (!rolesPermitidos.includes(rol))
+      return err(res, 'El rol seleccionado no es válido en el sistema');
+
+    const regexNombre = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    if (!regexNombre.test(nombre))
+      return err(res, 'El nombre del trabajador no debe contener números');
+    if (contrasena.length < 6)
+      return err(res, 'La contraseña debe tener al menos 6 caracteres');
 
     const [dup] = await db.query('SELECT id FROM trabajadores WHERE num_emp = ?', [num_emp]);
     if (dup.length) return err(res, 'Ese número de empleado ya existe', 409);
@@ -369,9 +392,9 @@ app.post('/trabajadores', async (req, res) => {
     const hash = await bcrypt.hash(contrasena, 10);
     await db.query(
       'INSERT INTO trabajadores (num_emp, nombre, rol, contrasena, activo) VALUES (?, ?, ?, ?, true)',
-      [num_emp, nombre, rol || 'veterinario', hash]
+      [num_emp, nombre, rol, hash]
     );
-    ok(res, { mensaje: 'Trabajador registrado correctamente' }, 201);
+    ok(res, { mensaje: 'Personal registrado correctamente' }, 201);
   } catch (e) {
     err(res, e.message, 500);
   }
@@ -397,6 +420,10 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`🐾 Patitas Felices API corriendo en http://localhost:${PORT}`);
 });
+// force redeploy mar 19 may 2026 23:27:52 CST
+// force redeploy mar 19 may 2026 23:28:52 CST
+// force redeploy mar 19 may 2026 23:52:40 CST
+// force redeploy mié 20 may 2026 10:34:31 CST
 // force redeploy mar 19 may 2026 23:27:52 CST
 // force redeploy mar 19 may 2026 23:28:52 CST
 // force redeploy mar 19 may 2026 23:52:40 CST
