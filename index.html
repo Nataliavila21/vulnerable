@@ -477,8 +477,8 @@
         <h2 style="font-size:1.7rem;margin-bottom:4px">Solicitudes de adopción</h2>
         <p style="font-size:.83rem;margin-bottom:18px">Gestiona las solicitudes del sistema</p>
         <div class="apicard"><div style="overflow-x:auto">
-          <table class="ctbl"><thead><tr><th>Solicitante</th><th>Animal</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
-          <tbody id="tbS"><tr><td colspan="5" style="text-align:center;color:var(--txt-3);padding:22px">Cargando...</td></tr></tbody></table>
+          <table class="ctbl"><thead><tr><th>Solicitante</th><th>Animal</th><th>Motivo</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="tbS"><tr><td colspan="6" style="text-align:center;color:var(--txt-3);padding:22px">Cargando...</td></tr></tbody></table>
         </div></div>
       </div>
 
@@ -565,6 +565,15 @@
           <div class="col-lg-5"><div class="apicard">
             <h3 style="font-size:.97rem;margin-bottom:13px">Personal del sistema</h3>
             <div id="lPersonal"><div class="lempty">Cargando...</div></div>
+            <hr style="border-color:var(--line);margin:16px 0">
+            <h3 style="font-size:.97rem;margin-bottom:13px">Añadir trabajador</h3>
+            <div class="mb-2"><label class="flabel">N° empleado</label><input type="text" id="tNumEmp" class="finput" placeholder="Ej. EMP-004"></div>
+            <div class="mb-2"><label class="flabel">Nombre completo</label><input type="text" id="tNombre" class="finput" placeholder="Nombre completo"></div>
+            <div class="mb-2"><label class="flabel">Rol</label><select id="tRol" class="finput"><option value="veterinario">Veterinario</option><option value="admin">Administrador</option></select></div>
+            <div class="mb-3"><label class="flabel">Contraseña</label><input type="password" id="tPass" class="finput" placeholder="Mín. 6 caracteres"></div>
+            <button class="btn btn-v btn-sm w-100" id="bTrab" onclick="registrarTrabajador()"><i class="bi bi-person-plus me-1"></i>Guardar trabajador</button>
+            <div class="smsg" id="okTrab"></div>
+            <div class="emsg" id="erTrab"></div>
           </div></div>
           <div class="col-lg-7"><div class="apicard">
             <h3 style="font-size:.97rem;margin-bottom:13px">URL del servidor API</h3>
@@ -884,6 +893,7 @@ async function loadSolic(){
     tb.innerHTML=r.data.map(s=>`<tr>
       <td><strong>${s.adoptante_nombre}</strong><br><small style="color:var(--txt-3)">${s.adoptante_correo}</small></td>
       <td>${s.animal_emoji||'🐾'} ${s.animal_nombre}</td>
+      <td style="font-size:.82rem;color:var(--txt-2);max-width:180px">${s.motivo||'<em style="color:var(--txt-3)">Sin motivo</em>'}</td>
       <td>${fmt(s.creado_en)}</td>
       <td><span class="tag tag-${s.estado}">${s.estado}</span></td>
       <td>${s.estado==='pendiente'
@@ -910,7 +920,10 @@ async function loadAnimAdm(){
       <td>${a.edad||'—'}</td>
       <td><span class="tag tag-${a.estado}">${elbl(a.estado)}</span></td>
       <td style="font-size:.78rem;color:var(--txt-3)">${fmt(a.ingreso_en)}</td>
-      <td><button class="btn btn-ov btn-sm" onclick="delAnimal(${a.id},'${a.nombre}',this)"><i class="bi bi-trash"></i></button></td>
+      <td style="display:flex;gap:5px;align-items:center">
+        ${a.estado==='tratamiento'?`<button class="btn btn-v btn-sm" onclick="darDeAltaAnimal(${a.id},this)" title="Marcar como disponible"><i class="bi bi-check-circle me-1"></i>Alta</button>`:''}
+        <button class="btn btn-ov btn-sm" onclick="delAnimal(${a.id},'${a.nombre}',this)"><i class="bi bi-trash"></i></button>
+      </td>
     </tr>`).join('');
   }catch{tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--tierra);padding:20px">Error cargando.</td></tr>';}
 }
@@ -1013,6 +1026,41 @@ function saveUrl(){
   API=u;localStorage.setItem('pf_api',u);
   sm('okCfg','✓ URL actualizada. Recargando datos...');
   setTimeout(()=>{loadAnimales();loadStats();},500);
+}
+
+async function darDeAltaAnimal(idAnimal, btn) {
+  if (!confirm('¿Seguro que este animal ya está sano y listo para adopción?')) return;
+  btn.disabled = true;
+  try {
+    const r = await api(`/animales/${idAnimal}/estado`, {
+      method: 'PATCH',
+      body: JSON.stringify({ estado: 'disponible' })
+    });
+    if (r.ok) { loadAnimAdm(); loadAnimales(); }
+    else { alert('Error: ' + r.error); btn.disabled = false; }
+  } catch { alert('Error de conexión.'); btn.disabled = false; }
+}
+
+async function registrarTrabajador() {
+  hm('okTrab'); hm('erTrab');
+  const datos = {
+    num_emp: g('tNumEmp').value.trim(),
+    nombre:  g('tNombre').value.trim(),
+    rol:     g('tRol').value,
+    contrasena: g('tPass').value
+  };
+  if (!datos.num_emp || !datos.nombre || !datos.contrasena) { sm('erTrab', 'Todos los campos son obligatorios.', 'e'); return; }
+  if (datos.contrasena.length < 6) { sm('erTrab', 'La contraseña debe tener al menos 6 caracteres.', 'e'); return; }
+  bl('bTrab', true, 'Guardando...');
+  try {
+    const r = await api('/trabajadores', { method: 'POST', body: JSON.stringify(datos) });
+    if (r.ok) {
+      sm('okTrab', '✓ Trabajador registrado correctamente.');
+      g('tNumEmp').value = ''; g('tNombre').value = ''; g('tPass').value = '';
+      loadCfg();
+    } else { sm('erTrab', r.error, 'e'); }
+  } catch { sm('erTrab', 'Error de conexión.', 'e'); }
+  finally { bl('bTrab', false); }
 }
 
 window.onload=()=>M.show();
