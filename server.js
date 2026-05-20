@@ -357,6 +357,37 @@ app.get('/stats', async (_req, res) => {
   }
 });
 
+// POST /trabajadores — Registrar nuevo trabajador desde el dashboard
+app.post('/trabajadores', async (req, res) => {
+  try {
+    const { num_emp, nombre, rol, contrasena } = req.body;
+    if (!num_emp || !nombre || !rol || !contrasena) return err(res, 'Todos los campos son obligatorios');
+
+    const [dup] = await db.query('SELECT id FROM trabajadores WHERE num_emp = ?', [num_emp]);
+    if (dup.length) return err(res, 'Ese número de empleado ya existe', 409);
+
+    const hash = await bcrypt.hash(contrasena, 10);
+    await db.query(
+      'INSERT INTO trabajadores (num_emp, nombre, rol, contrasena, activo) VALUES (?, ?, ?, ?, true)',
+      [num_emp, nombre, rol || 'veterinario', hash]
+    );
+    ok(res, { mensaje: 'Trabajador registrado correctamente' }, 201);
+  } catch (e) {
+    err(res, e.message, 500);
+  }
+});
+
+// PATCH /animales/:id/estado — Cambiar rápidamente solo el estado del animal
+app.patch('/animales/:id/estado', async (req, res) => {
+  try {
+    const { estado } = req.body;
+    await db.query('UPDATE animales SET estado = ? WHERE id = ?', [estado, req.params.id]);
+    ok(res, { mensaje: 'Estado actualizado a ' + estado });
+  } catch (e) {
+    err(res, e.message, 500);
+  }
+});
+
 // ─── 404 catch-all ────────────────────────────────────────
 app.use((req, res) => {
   err(res, `Ruta ${req.method} ${req.path} no encontrada`, 404);
