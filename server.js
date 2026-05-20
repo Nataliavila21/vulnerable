@@ -150,8 +150,9 @@ app.post('/adoptantes/login', async (req, res) => {
     const { correo, contrasena } = req.body;
     if (!correo || !contrasena) return err(res, 'Correo y contraseña requeridos');
 
+    // CORRECCIÓN: 'activo = true' para PostgreSQL
     const [rows] = await db.query(
-      'SELECT * FROM adoptantes WHERE correo = ? AND activo = 1', [correo]
+      'SELECT * FROM adoptantes WHERE correo = ? AND activo = true', [correo]
     );
     if (!rows.length) return err(res, 'Credenciales incorrectas', 401);
 
@@ -187,8 +188,9 @@ app.post('/trabajadores/login', async (req, res) => {
     const { num_emp, contrasena } = req.body;
     if (!num_emp || !contrasena) return err(res, 'ID y contraseña requeridos');
 
+    // CORRECCIÓN: 'activo = true' para PostgreSQL
     const [rows] = await db.query(
-      'SELECT * FROM trabajadores WHERE num_emp = ? AND activo = 1', [num_emp]
+      'SELECT * FROM trabajadores WHERE num_emp = ? AND activo = true', [num_emp]
     );
     if (!rows.length) return err(res, 'Credenciales incorrectas', 401);
 
@@ -339,7 +341,9 @@ app.get('/stats', async (_req, res) => {
     const [[{ disponibles }]]       = await db.query("SELECT COUNT(*) AS disponibles FROM animales WHERE estado='disponible'");
     const [[{ en_tratamiento }]]    = await db.query("SELECT COUNT(*) AS en_tratamiento FROM animales WHERE estado='tratamiento'");
     const [[{ adoptados }]]         = await db.query("SELECT COUNT(*) AS adoptados FROM animales WHERE estado='adoptado'");
-    const [[{ total_adoptantes }]]  = await db.query('SELECT COUNT(*) AS total_adoptantes FROM adoptantes WHERE activo=1');
+    
+    // CORRECCIÓN: 'activo = true' para PostgreSQL
+    const [[{ total_adoptantes }]]  = await db.query('SELECT COUNT(*) AS total_adoptantes FROM adoptantes WHERE activo=true');
     const [[{ solicitudes_pend }]]  = await db.query("SELECT COUNT(*) AS solicitudes_pend FROM solicitudes WHERE estado='pendiente'");
     const [[{ solicitudes_total }]] = await db.query('SELECT COUNT(*) AS solicitudes_total FROM solicitudes');
 
