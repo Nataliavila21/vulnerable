@@ -1,13 +1,21 @@
 // server.js — API REST completa para Patitas Felices
 require('dotenv').config();
 
-const express  = require('express');
-const cors     = require('cors');
-const bcrypt   = require('bcryptjs');
-const db       = require('./db');
+const express          = require('express');
+const cors             = require('cors');
+const bcrypt           = require('bcryptjs');
+const multer           = require('multer');
+const { createClient } = require('@supabase/supabase-js');
+const db               = require('./db');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
+
+// ─── Supabase Storage ─────────────────────────────────────
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+
+// ─── Multer (foto en RAM temporalmente) ───────────────────
+const upload = multer({ storage: multer.memoryStorage() });
 
 // ─── Middlewares ───────────────────────────────────────────
 
@@ -65,17 +73,36 @@ app.get('/animales/:id', async (req, res) => {
   }
 });
 
-// POST /animales — registrar animal
-app.post('/animales', async (req, res) => {
+// POST /animales — registrar animal (con foto opcional vía Supabase Storage)
+app.post('/animales', upload.single('foto'), async (req, res) => {
   try {
-    const { nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url } = req.body;
+    const { nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url: fotoUrlBody } = req.body;
     if (!nombre) return err(res, 'El nombre es obligatorio');
+
+    let foto_url = fotoUrlBody || null;
+
+    // Si viene un archivo, súbelo al bucket "fotos_animales"
+    if (req.file) {
+      const nombreArchivo = Date.now() + '-' + req.file.originalname.replace(/\s/g, '_');
+
+      const { error: upErr } = await supabase.storage
+        .from('fotos_animales')
+        .upload(nombreArchivo, req.file.buffer, { contentType: req.file.mimetype });
+
+      if (upErr) return err(res, 'Error subiendo foto: ' + upErr.message, 500);
+
+      const { data: linkData } = supabase.storage
+        .from('fotos_animales')
+        .getPublicUrl(nombreArchivo);
+
+      foto_url = linkData.publicUrl;
+    }
 
     const [result] = await db.query(
       `INSERT INTO animales (nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [nombre, especie||'otro', raza||null, edad||null, sexo||'desconocido',
-       estado||'disponible', descripcion||null, emoji||'🐾', foto_url||null]
+       estado||'disponible', descripcion||null, emoji||'🐾', foto_url]
     );
     const [rows] = await db.query('SELECT * FROM animales WHERE id = ?', [result.insertId]);
     ok(res, rows[0], 201);
