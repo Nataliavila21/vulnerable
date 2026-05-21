@@ -148,6 +148,11 @@
     .d1{animation-delay:.07s}.d2{animation-delay:.16s}.d3{animation-delay:.25s}.d4{animation-delay:.35s}.d5{animation-delay:.45s}
     @media(max-width:768px){.hvcol{display:none;}.alayout{flex-direction:column;}.aside{width:100%;position:relative;top:0;height:auto;}}
 
+    /* --- PASS WRAP (ojito) --- */
+    .pass-wrap{position:relative;display:flex;align-items:center;}
+    .pass-wrap .finput{flex:1;padding-right:40px;}
+    .btn-ojo{position:absolute;right:8px;background:none;border:none;cursor:pointer;color:var(--txt-3);font-size:.95rem;padding:4px;line-height:1;transition:color .2s;}
+    .btn-ojo:hover{color:var(--verde);}
     /* --- MODAL <dialog> --- */
     .modal-trab{border:none;border-radius:12px;padding:24px;width:90%;max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,.22);}
     .modal-trab::backdrop{background:rgba(0,0,0,.55);}
@@ -224,7 +229,10 @@
             <div class="mb-3"><label class="flabel">Correo</label>
               <input type="email" id="lc" class="finput" placeholder="tu@correo.com" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
             <div class="mb-3"><label class="flabel">Contraseña</label>
-              <input type="password" id="lp" class="finput" placeholder="••••••••" onfocus="dh('A',true)" onblur="dh('A',false)"></div>
+              <div class="pass-wrap">
+                <input type="password" id="lp" class="finput" placeholder="••••••••" onfocus="dh('A',true)" onblur="dh('A',false)">
+                <button type="button" class="btn-ojo" onclick="togglePass('lp',this)" tabindex="-1" title="Ver contraseña"><i class="bi bi-eye"></i></button>
+              </div></div>
             <button class="btn btn-v w-100 py-2" id="bla" onclick="loginA()"><i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión</button>
             <div class="lerr" id="ela"></div>
           </div>
@@ -242,7 +250,10 @@
               <div class="col-12"><label class="flabel">Correo</label>
                 <input type="email" id="rc" class="finput" placeholder="tu@correo.com" onfocus="dt(this,'A')" oninput="dt(this,'A')" onblur="dr('A')"></div>
               <div class="col-12"><label class="flabel">Contraseña</label>
-                <input type="password" id="rp" class="finput" placeholder="Mínimo 6 caracteres" onfocus="dh('A',true)" onblur="dh('A',false)"></div>
+                <div class="pass-wrap">
+                  <input type="password" id="rp" class="finput" placeholder="Mínimo 6 caracteres" onfocus="dh('A',true)" onblur="dh('A',false)">
+                  <button type="button" class="btn-ojo" onclick="togglePass('rp',this)" tabindex="-1" title="Ver contraseña"><i class="bi bi-eye"></i></button>
+                </div></div>
             </div>
             <button class="btn btn-v w-100 py-2 mt-3" id="bra" onclick="regA()"><i class="bi bi-person-plus me-2"></i>Registrar cuenta</button>
             <div class="lerr" id="era"></div>
@@ -284,7 +295,10 @@
           <div class="mb-3"><label class="flabel">Número de identificación</label>
             <input type="text" id="wi" class="finput" placeholder="Ej. EMP-001" onfocus="dt(this,'W')" oninput="dt(this,'W')" onblur="dr('W')"></div>
           <div class="mb-3"><label class="flabel">Contraseña</label>
-            <input type="password" id="wp" class="finput" placeholder="••••••••" onfocus="dh('W',true)" onblur="dh('W',false)"></div>
+            <div class="pass-wrap">
+              <input type="password" id="wp" class="finput" placeholder="••••••••" onfocus="dh('W',true)" onblur="dh('W',false)">
+              <button type="button" class="btn-ojo" onclick="togglePass('wp',this)" tabindex="-1" title="Ver contraseña"><i class="bi bi-eye"></i></button>
+            </div></div>
           <button class="btn btn-t w-100 py-2" id="blw" onclick="loginW()"><i class="bi bi-shield-lock me-2"></i>Acceder al sistema</button>
           <div class="lerr" id="elw"></div>
         </div>
@@ -501,7 +515,14 @@
       <div class="apanel" id="ap-anim">
         <h2 style="font-size:1.7rem;margin-bottom:4px">Gestión de animales</h2>
         <p style="font-size:.83rem;margin-bottom:18px">Catálogo completo del refugio</p>
-        <div class="apicard"><div style="overflow-x:auto">
+        <div class="apicard">
+          <div class="mb-3" style="max-width:320px">
+            <div class="pass-wrap">
+              <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--txt-3);pointer-events:none"><i class="bi bi-search"></i></span>
+              <input type="search" id="buscadorAnimales" class="finput" placeholder="Buscar animal por nombre..." oninput="filtrarAnimales(this.value)" style="padding-left:32px">
+            </div>
+          </div>
+          <div style="overflow-x:auto">
           <table class="ctbl"><thead><tr><th></th><th>Nombre</th><th>Raza</th><th>Edad</th><th>Estado</th><th>Ingreso</th><th></th></tr></thead>
           <tbody id="tbA"><tr><td colspan="7" style="text-align:center;color:var(--txt-3);padding:22px">Cargando...</td></tr></tbody></table>
         </div>
@@ -560,6 +581,10 @@
               <div class="col-6"><label class="flabel">Emoji</label><input type="text" id="aEmo" class="finput" placeholder="🐾" maxlength="2"></div>
               <div class="col-12"><label class="flabel">Estado inicial</label><select id="aEst" class="finput"><option value="disponible">Disponible</option><option value="tratamiento">En tratamiento</option></select></div>
               <div class="col-12"><label class="flabel">Descripción</label><textarea id="aDes" class="finput" placeholder="Personalidad, historia, necesidades especiales..."></textarea></div>
+              <div class="col-12"><label class="flabel">Foto del animal</label>
+                <input type="url" id="aFoto" class="finput" placeholder="URL de la imagen (desde Supabase Storage)">
+                <small style="color:var(--txt-3);font-size:.73rem">Sube la imagen en Supabase → Storage → bucket <code>animales</code> y pega aquí la URL pública.</small>
+              </div>
             </div>
             <button class="btn btn-v w-100 py-2 mt-3" id="bAReg" onclick="saveAdmAnimal()"><i class="bi bi-plus-circle me-2"></i>Registrar animal</button>
             <div class="smsg" id="okAReg">✓ Animal registrado correctamente.</div>
@@ -762,7 +787,9 @@ async function loadAnimales(){
     if(grid){
       grid.innerHTML=A.length
         ? A.map(a=>`<div class="col-sm-6 col-lg-4" data-tipo="${a.especie}" data-est="${a.estado}">
-            <div class="acard"><div class="cimg">${a.emoji||'🐾'}</div>
+            <div class="acard"><div class="cimg">${a.foto_url
+              ?`<img src="${a.foto_url}" alt="${a.nombre}" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0">`
+              :`<span style="font-size:3rem">${a.emoji||'🐾'}</span>`}</div>
             <div class="cbody"><div class="cmeta"><h3>${a.nombre}</h3><span class="tag tag-${a.estado}">${elbl(a.estado)}</span></div>
             <div class="cinfo">${a.raza||a.especie} · ${a.edad||'?'} · ${a.sexo}</div>
             <div class="d-flex gap-2">${a.estado==='disponible'
@@ -783,11 +810,15 @@ async function loadAnimales(){
     if(hc&&disp.length){
       hc.innerHTML=`<div class="row g-3">
         <div class="col-12"><div class="hcard" style="display:flex;align-items:center;gap:16px">
-          <span style="font-size:3.2rem">${disp[0].emoji||'🐾'}</span>
+          ${disp[0].foto_url
+            ?`<img src="${disp[0].foto_url}" alt="${disp[0].nombre}" style="width:72px;height:72px;object-fit:cover;border-radius:50%">`
+            :`<span style="font-size:3.2rem">${disp[0].emoji||'🐾'}</span>`}
           <div><div class="hcard-name">${disp[0].nombre}</div><div class="hcard-info">${disp[0].raza||disp[0].especie} · ${disp[0].edad||'?'} · ${disp[0].sexo}</div><span class="tag tag-disponible">Disponible</span></div>
         </div></div>
         ${disp.slice(1).map(a=>`<div class="col-6"><div class="hcard">
-          <div style="font-size:2.5rem;margin-bottom:6px">${a.emoji||'🐾'}</div>
+          ${a.foto_url
+            ?`<img src="${a.foto_url}" alt="${a.nombre}" style="width:56px;height:56px;object-fit:cover;border-radius:50%;margin-bottom:6px">`
+            :`<div style="font-size:2.5rem;margin-bottom:6px">${a.emoji||'🐾'}</div>`}
           <div class="hcard-name">${a.nombre}</div><div class="hcard-info">${a.raza||a.especie} · ${a.edad||'?'}</div>
           <span class="tag tag-disponible">Disponible</span>
         </div></div>`).join('')}
@@ -924,7 +955,7 @@ async function loadSolic(){
     if(!r.ok||!r.data.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--txt-3);padding:20px">Sin solicitudes.</td></tr>';return;}
     tb.innerHTML=r.data.map(s=>`<tr>
       <td><strong>${s.adoptante_nombre}</strong><br><small style="color:var(--txt-3)">${s.adoptante_correo}</small></td>
-      <td>${s.animal_emoji||'🐾'} ${s.animal_nombre}</td>
+      <td>${s.animal_emoji||'🐾'} ${s.animal_nombre}<br><small style="color:var(--txt-3);font-size:.75rem">${s.especie==='perro'?'🐶 Perro':s.especie==='gato'?'🐱 Gato':s.especie||'—'}</small></td>
       <td style="font-size:.82rem;color:var(--txt-2);max-width:180px">${s.motivo||'<em style="color:var(--txt-3)">Sin motivo</em>'}</td>
       <td>${fmt(s.creado_en)}</td>
       <td><span class="tag tag-${s.estado}">${s.estado}</span></td>
@@ -946,7 +977,7 @@ async function loadAnimAdm(){
   try{
     const r=await api('/animales');if(!r.ok)throw new Error();
     tb.innerHTML=r.data.map(a=>`<tr>
-      <td style="font-size:1.65rem">${a.emoji||'🐾'}</td>
+      <td style="font-size:1.65rem">${a.foto_url?`<img src="${a.foto_url}" alt="${a.nombre}" style="width:40px;height:40px;object-fit:cover;border-radius:8px">`:(a.emoji||'🐾')}</td>
       <td><strong>${a.nombre}</strong></td>
       <td>${a.raza||'—'} <small style="color:var(--txt-3)">(${a.especie})</small></td>
       <td>${a.edad||'—'}</td>
@@ -1032,10 +1063,10 @@ async function saveAdmAnimal(){
   if(!n){sm('erAReg','El nombre es obligatorio.','e');return;}
   bl('bAReg',true,'Registrando...');
   try{
-    const r=await api('/animales',{method:'POST',body:JSON.stringify({nombre:n,especie:g('aEsp').value,raza:g('aRaz').value,edad:g('aEd').value,sexo:g('aSex').value,estado:g('aEst').value,descripcion:g('aDes').value,emoji:g('aEmo').value||'🐾'})});
+    const r=await api('/animales',{method:'POST',body:JSON.stringify({nombre:n,especie:g('aEsp').value,raza:g('aRaz').value,edad:g('aEd').value,sexo:g('aSex').value,estado:g('aEst').value,descripcion:g('aDes').value,emoji:g('aEmo').value||'🐾',foto_url:g('aFoto').value.trim()||null})});
     if(!r.ok){sm('erAReg',r.error,'e');return;}
     sm('okAReg','✓ Animal registrado correctamente.');
-    ['aNom','aRaz','aEd','aDes','aEmo'].forEach(x=>g(x).value='');
+    ['aNom','aRaz','aEd','aDes','aEmo','aFoto'].forEach(x=>g(x).value='');
     loadAdmList();loadAnimales();
   }catch{sm('erAReg','Error de conexión.','e');}
   finally{bl('bAReg',false);}
@@ -1114,6 +1145,25 @@ async function registrarTrabajador() {
     } else { mostrarToast('Error: ' + r.error, 'error'); }
   } catch { mostrarToast('Error de conexión con el servidor.', 'error'); }
   finally { bl('bTrab', false); }
+}
+
+// ── VER CONTRASEÑA ───────────────────────────
+function togglePass(id, btn) {
+  const inp = g(id);
+  const showing = inp.type === 'text';
+  inp.type = showing ? 'password' : 'text';
+  btn.innerHTML = showing ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+}
+
+// ── BUSCADOR DE ANIMALES (admin) ─────────────
+function filtrarAnimales(texto) {
+  const q = texto.toLowerCase().trim();
+  const filas = document.querySelectorAll('#tbA tr');
+  filas.forEach(tr => {
+    // la columna Nombre es la 2ª celda (índice 1)
+    const nombre = (tr.cells[1]?.textContent || '').toLowerCase();
+    tr.style.display = (!q || nombre.includes(q)) ? '' : 'none';
+  });
 }
 
 window.onload=()=>M.show();
