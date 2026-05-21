@@ -147,6 +147,21 @@
     @keyframes fup{to{opacity:1;transform:none}}
     .d1{animation-delay:.07s}.d2{animation-delay:.16s}.d3{animation-delay:.25s}.d4{animation-delay:.35s}.d5{animation-delay:.45s}
     @media(max-width:768px){.hvcol{display:none;}.alayout{flex-direction:column;}.aside{width:100%;position:relative;top:0;height:auto;}}
+
+    /* --- MODAL <dialog> --- */
+    .modal-trab{border:none;border-radius:12px;padding:24px;width:90%;max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,.22);}
+    .modal-trab::backdrop{background:rgba(0,0,0,.55);}
+    .modal-trab-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+    .modal-trab-header h3{font-size:1rem;margin:0;color:var(--txt-1);}
+    .btn-cerrar-modal{background:none;border:none;font-size:1.25rem;cursor:pointer;color:var(--rojo,#dc3545);line-height:1;padding:0;}
+    .modal-trab .finput{width:100%;margin-bottom:10px;}
+    /* --- TOAST NOTIFICATIONS --- */
+    .toast-stack{position:fixed;bottom:22px;right:22px;display:flex;flex-direction:column;gap:10px;z-index:9999;pointer-events:none;}
+    .toast-noti{padding:12px 20px;border-radius:8px;color:#fff;font-size:.88rem;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.18);animation:tst-in .3s ease,tst-out .3s ease 2.7s forwards;}
+    .toast-noti.exito{background:var(--verde,#28a745);}
+    .toast-noti.error{background:#dc3545;}
+    @keyframes tst-in{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+    @keyframes tst-out{to{transform:translateX(110%);opacity:0}}
   </style>
 </head>
 <body>
@@ -566,14 +581,7 @@
             <h3 style="font-size:.97rem;margin-bottom:13px">Personal del sistema</h3>
             <div id="lPersonal"><div class="lempty">Cargando...</div></div>
             <hr style="border-color:var(--line);margin:16px 0">
-            <h3 style="font-size:.97rem;margin-bottom:13px">Añadir trabajador</h3>
-            <div class="mb-2"><label class="flabel">N° empleado</label><input type="text" id="tNumEmp" class="finput" placeholder="Ej. EMP-004"></div>
-            <div class="mb-2"><label class="flabel">Nombre completo</label><input type="text" id="tNombre" class="finput" placeholder="Nombre completo" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo letras y espacios, sin números"></div>
-            <div class="mb-2"><label class="flabel">Rol</label><select id="tRol" class="finput"><option value="veterinario">Veterinario</option><option value="admin">Administrador</option><option value="voluntario">Voluntario</option></select></div>
-            <div class="mb-3"><label class="flabel">Contraseña</label><input type="password" id="tPass" class="finput" placeholder="Mín. 6 caracteres"></div>
-            <button class="btn btn-v btn-sm w-100" id="bTrab" onclick="registrarTrabajador()"><i class="bi bi-person-plus me-1"></i>Guardar trabajador</button>
-            <div class="smsg" id="okTrab"></div>
-            <div class="emsg" id="erTrab"></div>
+            <button class="btn btn-v btn-sm w-100" onclick="abrirModalTrabajador()"><i class="bi bi-person-plus me-1"></i>Añadir personal</button>
           </div></div>
           <div class="col-lg-7"><div class="apicard">
             <h3 style="font-size:.97rem;margin-bottom:13px">URL del servidor API</h3>
@@ -588,6 +596,30 @@
     </main>
   </div>
 </div>
+
+<!-- MODAL AÑADIR PERSONAL -->
+<dialog id="modal-trabajador" class="modal-trab">
+  <div class="modal-trab-header">
+    <h3><i class="bi bi-person-plus me-2"></i>Añadir Nuevo Personal</h3>
+    <button class="btn-cerrar-modal" onclick="cerrarModalTrabajador()" title="Cerrar">✖</button>
+  </div>
+  <div class="mb-2"><label class="flabel">N° empleado</label>
+    <input type="text" id="tNumEmp" class="finput" placeholder="Ej. EMP-004" required></div>
+  <div class="mb-2"><label class="flabel">Nombre completo</label>
+    <input type="text" id="tNombre" class="finput" placeholder="Nombre completo" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo letras y espacios, sin números" required></div>
+  <div class="mb-2"><label class="flabel">Rol</label>
+    <select id="tRol" class="finput">
+      <option value="veterinario">Veterinario</option>
+      <option value="admin">Administrador</option>
+      <option value="voluntario">Voluntario</option>
+    </select></div>
+  <div class="mb-3"><label class="flabel">Contraseña</label>
+    <input type="password" id="tPass" class="finput" placeholder="Mín. 6 caracteres" required></div>
+  <button class="btn btn-v w-100" id="bTrab" onclick="registrarTrabajador()"><i class="bi bi-person-check me-1"></i>Guardar registro</button>
+</dialog>
+
+<!-- TOAST STACK -->
+<div class="toast-stack" id="toast-stack" aria-live="polite"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -1036,30 +1068,51 @@ async function darDeAltaAnimal(idAnimal, btn) {
       method: 'PATCH',
       body: JSON.stringify({ estado: 'disponible' })
     });
-    if (r.ok) { loadAnimAdm(); loadAnimales(); }
-    else { alert('Error: ' + r.error); btn.disabled = false; }
-  } catch { alert('Error de conexión.'); btn.disabled = false; }
+    if (r.ok) { loadAnimAdm(); loadAnimales(); mostrarToast('¡Animal dado de alta y listo para adopción!', 'exito'); }
+    else { mostrarToast('Error: ' + r.error, 'error'); btn.disabled = false; }
+  } catch { mostrarToast('Error de conexión.', 'error'); btn.disabled = false; }
 }
 
+// ── MODAL TRABAJADOR ────────────────────────
+const modalTrabajador = document.getElementById('modal-trabajador');
+
+function abrirModalTrabajador() {
+  modalTrabajador.showModal();
+}
+function cerrarModalTrabajador() {
+  modalTrabajador.close();
+  g('tNumEmp').value=''; g('tNombre').value=''; g('tPass').value='';
+}
+
+// ── TOAST NOTIFICATIONS ─────────────────────
+function mostrarToast(mensaje, tipo='exito') {
+  const stack = g('toast-stack');
+  const t = document.createElement('div');
+  t.className = `toast-noti ${tipo}`;
+  t.textContent = mensaje;
+  stack.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// ── REGISTRAR TRABAJADOR ─────────────────────
 async function registrarTrabajador() {
-  hm('okTrab'); hm('erTrab');
   const datos = {
-    num_emp: g('tNumEmp').value.trim(),
-    nombre:  g('tNombre').value.trim(),
-    rol:     g('tRol').value,
+    num_emp:    g('tNumEmp').value.trim(),
+    nombre:     g('tNombre').value.trim(),
+    rol:        g('tRol').value,
     contrasena: g('tPass').value
   };
-  if (!datos.num_emp || !datos.nombre || !datos.contrasena) { sm('erTrab', 'Todos los campos son obligatorios.', 'e'); return; }
-  if (datos.contrasena.length < 6) { sm('erTrab', 'La contraseña debe tener al menos 6 caracteres.', 'e'); return; }
+  if (!datos.num_emp || !datos.nombre || !datos.contrasena) { mostrarToast('Todos los campos son obligatorios.', 'error'); return; }
+  if (datos.contrasena.length < 6) { mostrarToast('La contraseña debe tener al menos 6 caracteres.', 'error'); return; }
   bl('bTrab', true, 'Guardando...');
   try {
     const r = await api('/trabajadores', { method: 'POST', body: JSON.stringify(datos) });
     if (r.ok) {
-      sm('okTrab', '✓ Trabajador registrado correctamente.');
-      g('tNumEmp').value = ''; g('tNombre').value = ''; g('tPass').value = '';
+      mostrarToast('¡Personal dado de alta exitosamente!', 'exito');
+      cerrarModalTrabajador();
       loadCfg();
-    } else { sm('erTrab', r.error, 'e'); }
-  } catch { sm('erTrab', 'Error de conexión.', 'e'); }
+    } else { mostrarToast('Error: ' + r.error, 'error'); }
+  } catch { mostrarToast('Error de conexión con el servidor.', 'error'); }
   finally { bl('bTrab', false); }
 }
 
