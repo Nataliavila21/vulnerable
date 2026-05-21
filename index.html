@@ -181,21 +181,12 @@
       <div class="modal-body">
         <p style="margin-bottom:14px;font-size:.86rem">Elige cómo quieres acceder:</p>
         <div class="atabs">
-          <button class="atab ai" id="ti" onclick="st('i')"><span class="ti">👤</span><span class="tl">Invitado</span></button>
-          <button class="atab" id="ta" onclick="st('a')"><span class="ti">🏠</span><span class="tl">Adoptante</span></button>
-          <button class="atab" id="tw" onclick="st('w')"><span class="ti">🩺</span><span class="tl">Trabajador</span></button>
-        </div>
-
-        <!-- INVITADO -->
-        <div class="lpanel on" id="pi">
-          <div class="text-center py-2"><div style="font-size:2.7rem;margin-bottom:10px">🐾</div>
-            <h3 style="margin-bottom:8px">Acceso sin registro</h3>
-            <p style="font-size:.86rem">Explora los animales disponibles.<br>Para adoptar necesitarás una cuenta.</p></div>
-          <button class="btn btn-v w-100 py-2 mt-2" onclick="enter('i')"><i class="bi bi-door-open me-2"></i>Entrar como invitado</button>
+          <button class="atab aa" id="ta" onclick="st('a')"><span class="ti">🏠</span><span class="tl">Usuario</span></button>
+          <button class="atab" id="tw" onclick="st('w')"><span class="ti">🩺</span><span class="tl">Administrador</span></button>
         </div>
 
         <!-- ADOPTANTE -->
-        <div class="lpanel" id="pa">
+        <div class="lpanel on" id="pa">
           <!-- PERRITO A -->
           <div class="dwrap"><div class="dbox" id="dboxA">
             <svg viewBox="0 0 120 108" width="120" height="108" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
@@ -676,8 +667,8 @@ function fmt(d){return d?new Date(d).toLocaleDateString('es-MX'):'—';}
 
 // ── TABS ───────────────────────────────────
 function st(k){
-  ['i','a','w'].forEach(x=>{g('t'+x).className='atab';g('p'+x).classList.remove('on');});
-  g('t'+k).classList.add({i:'ai',a:'aa',w:'at'}[k]);
+  ['a','w'].forEach(x=>{g('t'+x).className='atab';g('p'+x).classList.remove('on');});
+  g('t'+k).classList.add({a:'aa',w:'at'}[k]);
   g('p'+k).classList.add('on');
 }
 
@@ -772,7 +763,7 @@ function logout(){
   S={rol:null,id:null,nombre:null};
   document.body.classList.remove('ri','ra','rw');
   g('pmain').style.display='block';g('padmin').style.display='none';
-  st('i');M.show();
+  st('a');M.show();
 }
 function rm(){st('a');M.show();}
 
