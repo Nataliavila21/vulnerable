@@ -582,8 +582,8 @@
               <div class="col-12"><label class="flabel">Estado inicial</label><select id="aEst" class="finput"><option value="disponible">Disponible</option><option value="tratamiento">En tratamiento</option></select></div>
               <div class="col-12"><label class="flabel">Descripción</label><textarea id="aDes" class="finput" placeholder="Personalidad, historia, necesidades especiales..."></textarea></div>
               <div class="col-12"><label class="flabel">Foto del animal</label>
-                <input type="url" id="aFoto" class="finput" placeholder="URL de la imagen (desde Supabase Storage)">
-                <small style="color:var(--txt-3);font-size:.73rem">Sube la imagen en Supabase → Storage → bucket <code>animales</code> y pega aquí la URL pública.</small>
+                <input type="file" id="aFoto" class="finput" accept="image/*">
+                <small style="color:var(--txt-3);font-size:.73rem">Opcional. Formatos: JPG, PNG, WEBP. Se sube directamente a Supabase Storage.</small>
               </div>
             </div>
             <button class="btn btn-v w-100 py-2 mt-3" id="bAReg" onclick="saveAdmAnimal()"><i class="bi bi-plus-circle me-2"></i>Registrar animal</button>
@@ -1063,13 +1063,31 @@ async function saveAdmAnimal(){
   if(!n){sm('erAReg','El nombre es obligatorio.','e');return;}
   bl('bAReg',true,'Registrando...');
   try{
-    const r=await api('/animales',{method:'POST',body:JSON.stringify({nombre:n,especie:g('aEsp').value,raza:g('aRaz').value,edad:g('aEd').value,sexo:g('aSex').value,estado:g('aEst').value,descripcion:g('aDes').value,emoji:g('aEmo').value||'🐾',foto_url:g('aFoto').value.trim()||null})});
-    if(!r.ok){sm('erAReg',r.error,'e');return;}
+    // FormData en lugar de JSON para poder enviar el archivo de foto
+    const fd = new FormData();
+    fd.append('nombre',      n);
+    fd.append('especie',     g('aEsp').value);
+    fd.append('raza',        g('aRaz').value);
+    fd.append('edad',        g('aEd').value);
+    fd.append('sexo',        g('aSex').value);
+    fd.append('estado',      g('aEst').value);
+    fd.append('descripcion', g('aDes').value);
+    fd.append('emoji',       g('aEmo').value || '🐾');
+
+    const archivo = g('aFoto').files[0];
+    if (archivo) fd.append('foto', archivo);
+
+    // Sin Content-Type: el navegador lo pone solo con el boundary correcto
+    const resp = await fetch(API + '/animales', { method: 'POST', body: fd });
+    const data = await resp.json();
+
+    if(!resp.ok){ sm('erAReg', data.error || 'Error al registrar.', 'e'); return; }
     sm('okAReg','✓ Animal registrado correctamente.');
-    ['aNom','aRaz','aEd','aDes','aEmo','aFoto'].forEach(x=>g(x).value='');
-    loadAdmList();loadAnimales();
-  }catch{sm('erAReg','Error de conexión.','e');}
-  finally{bl('bAReg',false);}
+    ['aNom','aRaz','aEd','aDes','aEmo'].forEach(x=>g(x).value='');
+    g('aFoto').value = '';
+    loadAdmList(); loadAnimales();
+  }catch{ sm('erAReg','Error de conexión.','e'); }
+  finally{ bl('bAReg',false); }
 }
 
 async function loadCfg(){
