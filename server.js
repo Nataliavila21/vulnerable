@@ -83,8 +83,10 @@ app.post('/animales', upload.single('foto'), async (req, res) => {
 
     // Si viene un archivo, súbelo al bucket "fotos_animales"
     if (req.file) {
-      const nombreArchivo = Date.now() + '-' + req.file.originalname.replace(/\s/g, '_');
-
+  // Extraemos la extensión de la foto (jpg, png, etc.)
+      const extension = req.file.originalname.split('.').pop().toLowerCase();
+// Generamos un nombre 100% seguro solo con letras y números
+      const nombreArchivo = `foto_${Date.now()}_${Math.floor(Math.random() * 1000)}.${extension}`;
       const { error: upErr } = await supabase.storage
         .from('fotos_animales')
         .upload(nombreArchivo, req.file.buffer, { contentType: req.file.mimetype });
