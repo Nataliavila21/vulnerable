@@ -68,14 +68,14 @@ app.get('/animales/:id', async (req, res) => {
 // POST /animales — registrar animal
 app.post('/animales', async (req, res) => {
   try {
-    const { nombre, especie, raza, edad, sexo, estado, descripcion, emoji } = req.body;
+    const { nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url } = req.body;
     if (!nombre) return err(res, 'El nombre es obligatorio');
 
     const [result] = await db.query(
-      `INSERT INTO animales (nombre, especie, raza, edad, sexo, estado, descripcion, emoji)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO animales (nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [nombre, especie||'otro', raza||null, edad||null, sexo||'desconocido',
-       estado||'disponible', descripcion||null, emoji||'🐾']
+       estado||'disponible', descripcion||null, emoji||'🐾', foto_url||null]
     );
     const [rows] = await db.query('SELECT * FROM animales WHERE id = ?', [result.insertId]);
     ok(res, rows[0], 201);
@@ -87,11 +87,11 @@ app.post('/animales', async (req, res) => {
 // PUT /animales/:id — editar animal
 app.put('/animales/:id', async (req, res) => {
   try {
-    const { nombre, especie, raza, edad, sexo, estado, descripcion, emoji } = req.body;
+    const { nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url } = req.body;
     await db.query(
       `UPDATE animales SET nombre=?, especie=?, raza=?, edad=?, sexo=?,
-       estado=?, descripcion=?, emoji=? WHERE id=?`,
-      [nombre, especie, raza, edad, sexo, estado, descripcion, emoji, req.params.id]
+       estado=?, descripcion=?, emoji=?, foto_url=? WHERE id=?`,
+      [nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url||null, req.params.id]
     );
     const [rows] = await db.query('SELECT * FROM animales WHERE id = ?', [req.params.id]);
     ok(res, rows[0]);
@@ -420,10 +420,6 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`🐾 Patitas Felices API corriendo en http://localhost:${PORT}`);
 });
-// force redeploy mar 19 may 2026 23:27:52 CST
-// force redeploy mar 19 may 2026 23:28:52 CST
-// force redeploy mar 19 may 2026 23:52:40 CST
-// force redeploy mié 20 may 2026 10:34:31 CST
 // force redeploy mar 19 may 2026 23:27:52 CST
 // force redeploy mar 19 may 2026 23:28:52 CST
 // force redeploy mar 19 may 2026 23:52:40 CST
