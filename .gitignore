@@ -1,3 +1,18 @@
-node_modules/
-.env
-*.log
+# ─── Variables de Entorno para Patitas Felices ───
+# En Render, estas variables se configuran en la pestaña "Environment"
+
+# 1. Conexión a la base de datos PostgreSQL (Supabase)
+DATABASE_URL=postgresql://postgres.idosqpbbcoqzrdwtmkhh:Proyecto-Patitas-Bases-Datos-26@aws-1-us-west-2.pooler.supabase.com:6543/postgres
+
+# 2. Puerto local (Render asignará el suyo automáticamente)
+PORT=3000
+
+# 3. Clave secreta para JWT
+JWT_SECRET=hjk32489yfdsuih32j890fsdjkl23890
+
+# 4. Configuración de CORS
+CORS_ORIGIN=https://jokerkorio.github.io/patitas-api/#
+
+# 5. Configuración de Nodemailer para correos automáticos
+EMAIL_USER=patitasfelices813@gmail.com
+EMAIL_PASS=hppf zwvw aihe mqlg
