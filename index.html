@@ -312,8 +312,9 @@
           <li class="nav-item"><a class="nav-link" href="#adoptar">Adoptar</a></li>
           <li class="nav-item reg-sect"><a class="nav-link" href="#registrar">Registrar</a></li>
           <li class="nav-item w-only"><a class="nav-link" href="#" onclick="goAdm()" style="color:var(--tierra)!important;font-weight:500"><i class="bi bi-speedometer2"></i> Admin</a></li>
-          <li class="nav-item ms-2"><span class="rbadge" id="nbadge">—</span></li>
-          <li class="nav-item ms-1"><button class="btn btn-ov btn-sm" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Salir</button></li>
+          <li class="nav-item ms-2"><span class="rbadge" id="nbadge" style="display:none">—</span></li>
+          <li class="nav-item ms-1" id="btn-login-header"><button class="btn btn-v btn-sm" onclick="rm()"><i class="bi bi-person me-1"></i>Iniciar sesión</button></li>
+          <li class="nav-item ms-1" id="btn-logout-header" style="display:none"><button class="btn btn-ov btn-sm" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Salir</button></li>
         </ul>
       </div>
     </div>
@@ -771,6 +772,11 @@ function enter(rol,id,nombre='Invitado'){
   const lbl={i:'👤 Invitado',a:'🏠 '+nombre,w:'🩺 '+nombre};
   const cls={i:'rbadge rb-inv',a:'rbadge rb-adp',w:'rbadge rb-trb'};
   g('nbadge').textContent=lbl[rol];g('nbadge').className=cls[rol];
+  // Mostrar badge y botón Salir; ocultar botón Iniciar sesión
+  const esInvitado = rol==='i';
+  g('nbadge').style.display = esInvitado ? 'none' : '';
+  g('btn-login-header').style.display  = esInvitado ? '' : 'none';
+  g('btn-logout-header').style.display = esInvitado ? 'none' : '';
   if(rol==='a'||rol==='w'){g('fadop').style.display='block';g('aaviso').style.display='none';}
   else{g('fadop').style.display='none';g('aaviso').style.display='block';g('aviso').style.display='block';}
   loadAnimales();loadStats();loadSelAnimal();
@@ -779,6 +785,10 @@ function enter(rol,id,nombre='Invitado'){
 function logout(){
   S={rol:null,id:null,nombre:null};
   document.body.classList.remove('ri','ra','rw');
+  // Restaurar navbar al estado de invitado
+  g('nbadge').style.display='none';
+  g('btn-login-header').style.display='';
+  g('btn-logout-header').style.display='none';
   g('pmain').style.display='block';g('padmin').style.display='none';
   st('a');M.show();
 }
