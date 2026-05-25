@@ -2,7 +2,6 @@
 require('dotenv').config();
 
 
-
 const express          = require('express');
 const cors             = require('cors');
 const bcrypt           = require('bcryptjs');
@@ -74,7 +73,7 @@ app.get('/animales/:id', async (req, res) => {
 // POST /animales — registrar animal (con foto en Base64/Binario)
 app.post('/animales', upload.single('foto'), async (req, res) => {
   try {
-    const { nombre, especie, raza, edad, sexo, estado, descripcion, emoji, peso, historia_rescate, foto_url: fotoUrlBody } = req.body;
+    const { nombre, especie, raza, edad, sexo, estado, emoji, peso, historia_rescate, foto_url: fotoUrlBody } = req.body;
     if (!nombre) return err(res, 'El nombre es obligatorio');
 
     let foto_url = fotoUrlBody || null;
@@ -88,10 +87,10 @@ app.post('/animales', upload.single('foto'), async (req, res) => {
     }
 
     const [result] = await db.query(
-      `INSERT INTO animales (nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url, peso, historia_rescate)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO animales (nombre, especie, raza, edad, sexo, estado, emoji, foto_url, peso, historia_rescate)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [nombre, especie||'otro', raza||null, edad||null, sexo||'desconocido',
-       estado||'disponible', descripcion||null, emoji||'🐾', foto_url, peso||null, historia_rescate||null]
+       estado||'disponible', emoji||'🐾', foto_url, peso||null, historia_rescate||null]
     );
     const [rows] = await db.query('SELECT * FROM animales WHERE id = ?', [result.insertId]);
     ok(res, rows[0], 201);
@@ -103,11 +102,11 @@ app.post('/animales', upload.single('foto'), async (req, res) => {
 // PUT /animales/:id — editar animal
 app.put('/animales/:id', async (req, res) => {
   try {
-    const { nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url } = req.body;
+    const { nombre, especie, raza, edad, sexo, estado, emoji, foto_url } = req.body;
     await db.query(
       `UPDATE animales SET nombre=?, especie=?, raza=?, edad=?, sexo=?,
-       estado=?, descripcion=?, emoji=?, foto_url=? WHERE id=?`,
-      [nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url||null, req.params.id]
+       estado=?, emoji=?, foto_url=? WHERE id=?`,
+      [nombre, especie, raza, edad, sexo, estado, emoji, foto_url||null, req.params.id]
     );
     const [rows] = await db.query('SELECT * FROM animales WHERE id = ?', [req.params.id]);
     ok(res, rows[0]);
