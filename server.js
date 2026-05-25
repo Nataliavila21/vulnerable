@@ -6,14 +6,10 @@ const express          = require('express');
 const cors             = require('cors');
 const bcrypt           = require('bcryptjs');
 const multer           = require('multer');
-const { createClient } = require('@supabase/supabase-js');
 const db               = require('./db');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
-
-// ─── Supabase Storage ─────────────────────────────────────
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // ─── Multer (foto en RAM temporalmente) ───────────────────
 const upload = multer({ storage: multer.memoryStorage() });
@@ -74,38 +70,27 @@ app.get('/animales/:id', async (req, res) => {
   }
 });
 
-// POST /animales — registrar animal (con foto opcional vía Supabase Storage)
+// POST /animales — registrar animal (con foto en Base64/Binario)
 app.post('/animales', upload.single('foto'), async (req, res) => {
   try {
-    const { nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url: fotoUrlBody } = req.body;
+    const { nombre, especie, raza, edad, sexo, estado, descripcion, emoji, peso, historia_rescate, foto_url: fotoUrlBody } = req.body;
     if (!nombre) return err(res, 'El nombre es obligatorio');
 
     let foto_url = fotoUrlBody || null;
 
-    // Si viene un archivo, súbelo al bucket "fotos_animales"
+    // Si viene un archivo, lo convertimos a cadena binaria Base64
     if (req.file) {
-  // Extraemos la extensión de la foto (jpg, png, etc.)
-      const extension = req.file.originalname.split('.').pop().toLowerCase();
-// Generamos un nombre 100% seguro solo con letras y números
-      const nombreArchivo = `foto_${Date.now()}_${Math.floor(Math.random() * 1000)}.${extension}`;
-      const { error: upErr } = await supabase.storage
-        .from('fotos_animales')
-        .upload(nombreArchivo, req.file.buffer, { contentType: req.file.mimetype });
-
-      if (upErr) return err(res, 'Error subiendo foto: ' + upErr.message, 500);
-
-      const { data: linkData } = supabase.storage
-        .from('fotos_animales')
-        .getPublicUrl(nombreArchivo);
-
-      foto_url = linkData.publicUrl;
+      // req.file.buffer es el archivo binario crudo en la memoria RAM
+      const base64String = req.file.buffer.toString('base64');
+      // Lo empaquetamos en un formato que el HTML pueda leer directamente como imagen
+      foto_url = `data:${req.file.mimetype};base64,${base64String}`;
     }
 
     const [result] = await db.query(
-      `INSERT INTO animales (nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO animales (nombre, especie, raza, edad, sexo, estado, descripcion, emoji, foto_url, peso, historia_rescate)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [nombre, especie||'otro', raza||null, edad||null, sexo||'desconocido',
-       estado||'disponible', descripcion||null, emoji||'🐾', foto_url]
+       estado||'disponible', descripcion||null, emoji||'🐾', foto_url, peso||null, historia_rescate||null]
     );
     const [rows] = await db.query('SELECT * FROM animales WHERE id = ?', [result.insertId]);
     ok(res, rows[0], 201);
