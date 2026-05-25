@@ -767,7 +767,13 @@ async function loginW(){
 
 // ── SESIÓN ──────────────────────────────────
 function enter(rol,id,nombre='Invitado'){
-  S={rol,id,nombre};M.hide();
+  S={rol,id,nombre};
+  if(rol!=='i'){
+    localStorage.setItem('pf_id',id);
+    localStorage.setItem('pf_rol',rol);
+    localStorage.setItem('pf_nombre',nombre);
+  }
+  M.hide();
   document.body.classList.remove('ri','ra','rw');
   document.body.classList.add({i:'ri',a:'ra',w:'rw'}[rol]);
   const lbl={i:'👤 Invitado',a:'🏠 '+nombre,w:'🩺 '+nombre};
@@ -784,6 +790,9 @@ function enter(rol,id,nombre='Invitado'){
 }
 
 function logout(){
+  localStorage.removeItem('pf_id');
+  localStorage.removeItem('pf_rol');
+  localStorage.removeItem('pf_nombre');
   S={rol:null,id:null,nombre:null};
   document.body.classList.remove('ri','ra','rw');
   // Restaurar navbar al estado de invitado
@@ -1244,7 +1253,13 @@ function filtrarAnimales(texto) {
   });
 }
 
-window.onload=()=>enter('i');
+window.onload=()=>{
+  const id     = localStorage.getItem('pf_id');
+  const rol    = localStorage.getItem('pf_rol');
+  const nombre = localStorage.getItem('pf_nombre');
+  if(id && rol) enter(rol, id, nombre);
+  else          enter('i');
+};
 </script>
 </body>
 </html>
