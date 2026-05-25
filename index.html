@@ -588,10 +588,11 @@
               <div class="col-6"><label class="flabel">Sexo</label><select id="aSex" class="finput"><option value="macho">Macho</option><option value="hembra">Hembra</option><option value="desconocido">Desconocido</option></select></div>
               <div class="col-6"><label class="flabel">Emoji</label><input type="text" id="aEmo" class="finput" placeholder="🐾" maxlength="2"></div>
               <div class="col-12"><label class="flabel">Estado inicial</label><select id="aEst" class="finput"><option value="disponible">Disponible</option><option value="tratamiento">En tratamiento</option></select></div>
-              <div class="col-12"><label class="flabel">Descripción</label><textarea id="aDes" class="finput" placeholder="Personalidad, historia, necesidades especiales..."></textarea></div>
+              <div class="col-12"><label class="flabel">Historia de rescate</label><textarea id="aHist" class="finput" placeholder="¿Dónde fue encontrado? ¿Cómo llegó al refugio?..."></textarea></div>
+              <div class="col-12"><label class="flabel">Peso</label><input type="text" id="aPes" class="finput" placeholder="Ej. 4.5 kg"></div>
               <div class="col-12"><label class="flabel">Foto del animal</label>
                 <input type="file" id="aFoto" class="finput" accept="image/*">
-                <small style="color:var(--txt-3);font-size:.73rem">Opcional. Formatos: JPG, PNG, WEBP. Se sube directamente a Supabase Storage.</small>
+                <small style="color:var(--txt-3);font-size:.73rem">Opcional. Formatos: JPG, PNG, WEBP.</small>
               </div>
             </div>
             <button class="btn btn-v w-100 py-2 mt-3" id="bAReg" onclick="saveAdmAnimal()"><i class="bi bi-plus-circle me-2"></i>Registrar animal</button>
@@ -1127,9 +1128,10 @@ async function saveAdmAnimal(){
     fd.append('raza',        g('aRaz').value);
     fd.append('edad',        g('aEd').value);
     fd.append('sexo',        g('aSex').value);
-    fd.append('estado',      g('aEst').value);
-    fd.append('descripcion', g('aDes').value);
-    fd.append('emoji',       g('aEmo').value || '🐾');
+    fd.append('estado',          g('aEst').value);
+    fd.append('historia_rescate', g('aHist').value);
+    fd.append('peso',             g('aPes').value);
+    fd.append('emoji',            g('aEmo').value || '🐾');
 
     const archivo = g('aFoto').files[0];
     if (archivo) fd.append('foto', archivo);
@@ -1140,7 +1142,7 @@ async function saveAdmAnimal(){
 
     if(!resp.ok){ sm('erAReg', data.error || 'Error al registrar.', 'e'); return; }
     sm('okAReg','✓ Animal registrado correctamente.');
-    ['aNom','aRaz','aEd','aDes','aEmo'].forEach(x=>g(x).value='');
+    ['aNom','aRaz','aEd','aHist','aPes','aEmo'].forEach(x=>g(x).value='');
     g('aFoto').value = '';
     loadAdmList(); loadAnimales();
   }catch{ sm('erAReg','Error de conexión.','e'); }
