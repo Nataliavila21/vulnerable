@@ -915,7 +915,8 @@ function verDetalle(id) {
   }
   g('detNombre').innerText = `${a.emoji || '🐾'} ${a.nombre}`;
   g('detInfo').innerText = [a.especie, a.raza, a.edad, a.peso].filter(Boolean).join(' · ');
-  g('detHist').innerText = `Historia: ${a.historia_rescate || 'Sin historia disponible'}`;
+  const historia = a.historia_rescate || 'Este animalito aún no tiene una historia registrada.';
+  g('detHist').innerText = historia;
   g('detEstado').innerText = `Estado: ${a.estado.toUpperCase()}`;
   ['section.hero','#animales','#adoptar','.reg-sect','#footer'].forEach(sel=>{
     const el = document.querySelector(`#pmain ${sel}`);
