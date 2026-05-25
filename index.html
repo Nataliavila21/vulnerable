@@ -777,7 +777,7 @@ function enter(rol,id,nombre='Invitado'){
   g('nbadge').style.display = esInvitado ? 'none' : '';
   g('btn-login-header').style.display  = esInvitado ? '' : 'none';
   g('btn-logout-header').style.display = esInvitado ? 'none' : '';
-  if(rol==='a'||rol==='w'){g('fadop').style.display='block';g('aaviso').style.display='none';}
+  if(rol==='a'||rol==='w'){g('fadop').style.display='block';g('aaviso').style.display='none';g('aviso').style.display='none';}
   else{g('fadop').style.display='none';g('aaviso').style.display='block';g('aviso').style.display='block';}
   loadAnimales();loadStats();loadSelAnimal();
 }
