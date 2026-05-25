@@ -167,6 +167,7 @@
     .toast-noti.error{background:#dc3545;}
     @keyframes tst-in{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
     @keyframes tst-out{to{transform:translateX(110%);opacity:0}}
+    .btn-disabled{background:var(--bg-3)!important;color:var(--txt-3)!important;border:1.5px solid var(--line)!important;border-radius:99px!important;font-family:'Jost',sans-serif;font-size:.78rem;font-weight:500;cursor:not-allowed!important;opacity:.75;padding:5px 14px;}
   </style>
 </head>
 <body>
@@ -800,9 +801,11 @@ async function loadAnimales(){
               :`<img src="https://via.placeholder.com/300x180?text=${encodeURIComponent(a.nombre)}" alt="${a.nombre}" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;opacity:.55">`}</div>
             <div class="cbody"><div class="cmeta"><h3>${a.nombre}</h3><span class="tag tag-${a.estado}">${elbl(a.estado)}</span></div>
             <div class="cinfo">${a.raza||a.especie} · ${a.edad||'?'} · ${a.sexo}</div>
-            <div class="d-flex gap-2">${a.estado==='disponible'
-              ?`<button class="btn btn-v btn-sm btn-adp" onclick="irAdoptar(${a.id},'${a.nombre}')">Adoptar</button><button class="btn btn-ov btn-sm" onclick="verDetalle(${a.id})">Ver más</button>`
-              :`<button class="btn btn-ov btn-sm" onclick="verDetalle(${a.id})">Ver más</button>`}
+            <div class="d-flex gap-2 align-items-center flex-wrap">${a.estado==='disponible'
+              ? S.id
+                  ? `<button class="btn btn-v btn-sm btn-adp" onclick="irAdoptar(${a.id},'${a.nombre}')">Adoptar</button><button class="btn btn-ov btn-sm" onclick="verDetalle(${a.id})">Ver más</button>`
+                  : `<button class="btn btn-disabled btn-sm" disabled title="Inicia sesión para adoptar">Inicia sesión para adoptar</button><button class="btn btn-ov btn-sm" onclick="verDetalle(${a.id})">Ver más</button>`
+              :`<button class="btn btn-ov btn-sm" onclick="verDetalle(${a.id})">${a.estado==='adoptado'?'Ya adoptado ❤️':'Ver más'}</button>`}
             </div></div></div></div>`).join('')
         : '<div class="col-12 text-center py-5" style="color:var(--txt-3)">No hay animales registrados.</div>';
     }
