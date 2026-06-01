@@ -29,6 +29,13 @@ app.use((req, _res, next) => {
 const ok  = (res, data, status = 200) => res.status(status).json({ ok: true,  data });
 const err = (res, msg,  status = 400) => res.status(status).json({ ok: false, error: msg });
 
+// ─── Middleware RBAC ──────────────────────────────────────
+const soloAdmin = (req, res, next) => {
+  const rol = req.headers['x-rol'];
+  if (rol !== 'admin') return err(res, 'Acceso denegado: se requiere rol admin', 403);
+  next();
+};
+
 // ═══════════════════════════════════════════════════════════
 //  HEALTH CHECK
 // ═══════════════════════════════════════════════════════════
@@ -71,7 +78,7 @@ app.get('/animales/:id', async (req, res) => {
 });
 
 // POST /animales — registrar animal (con foto en Base64/Binario)
-app.post('/animales', upload.single('foto'), async (req, res) => {
+app.post('/animales', soloAdmin, upload.single('foto'), async (req, res) => {
   try {
     const { nombre, especie, raza, edad, sexo, estado, emoji, peso, historia_rescate, foto_url: fotoUrlBody } = req.body;
     if (!nombre) return err(res, 'El nombre es obligatorio');
@@ -100,7 +107,7 @@ app.post('/animales', upload.single('foto'), async (req, res) => {
 });
 
 // PUT /animales/:id — editar animal
-app.put('/animales/:id', async (req, res) => {
+app.put('/animales/:id', soloAdmin, async (req, res) => {
   try {
     const { nombre, especie, raza, edad, sexo, estado, emoji, foto_url } = req.body;
     await db.query(
@@ -116,7 +123,7 @@ app.put('/animales/:id', async (req, res) => {
 });
 
 // DELETE /animales/:id
-app.delete('/animales/:id', async (req, res) => {
+app.delete('/animales/:id', soloAdmin, async (req, res) => {
   try {
     await db.query('DELETE FROM animales WHERE id = ?', [req.params.id]);
     ok(res, { mensaje: 'Animal eliminado' });
@@ -385,7 +392,7 @@ app.get('/stats', async (_req, res) => {
 });
 
 // POST /trabajadores — Registrar nuevo personal desde el dashboard
-app.post('/trabajadores', async (req, res) => {
+app.post('/trabajadores', soloAdmin, async (req, res) => {
   try {
     const { num_emp, nombre, rol, contrasena } = req.body;
     if (!num_emp || !nombre || !rol || !contrasena) return err(res, 'Todos los campos son obligatorios');
@@ -416,7 +423,7 @@ app.post('/trabajadores', async (req, res) => {
 });
 
 // PATCH /animales/:id/estado — Cambiar rápidamente solo el estado del animal
-app.patch('/animales/:id/estado', async (req, res) => {
+app.patch('/animales/:id/estado', soloAdmin, async (req, res) => {
   try {
     const { estado } = req.body;
     await db.query('UPDATE animales SET estado = ? WHERE id = ?', [estado, req.params.id]);
