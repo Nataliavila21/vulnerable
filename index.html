@@ -668,7 +668,9 @@ let animalesData = [];
 
 // ── API helper ──────────────────────────────
 async function api(path,o={}){
-  const r = await fetch(API+path,{headers:{'Content-Type':'application/json'},...o});
+  const headers={'Content-Type':'application/json'};
+  if(S.rolTrabajador) headers['x-rol']=S.rolTrabajador;
+  const r = await fetch(API+path,{headers,...o});
   return r.json();
 }
 function bl(id,on,txt=''){
@@ -760,18 +762,19 @@ async function loginW(){
   try{
     const r=await api('/trabajadores/login',{method:'POST',body:JSON.stringify({num_emp:id,contrasena:p})});
     if(!r.ok){sm('elw',r.error,'e');return;}
-    enter('w',r.data.id,r.data.nombre||id);
+    enter('w',r.data.id,r.data.nombre||id,r.data.rol);
   }catch{sm('elw','Error de conexión con el servidor.','e');}
   finally{bl('blw',false);}
 }
 
 // ── SESIÓN ──────────────────────────────────
-function enter(rol,id,nombre='Invitado'){
-  S={rol,id,nombre};
+function enter(rol,id,nombre='Invitado',rolTrabajador=null){
+  S={rol,id,nombre,rolTrabajador:rolTrabajador||localStorage.getItem('pf_rolTrabajador')};
   if(rol!=='i'){
     localStorage.setItem('pf_id',id);
     localStorage.setItem('pf_rol',rol);
     localStorage.setItem('pf_nombre',nombre);
+    if(rolTrabajador) localStorage.setItem('pf_rolTrabajador',rolTrabajador);
   }
   M.hide();
   document.body.classList.remove('ri','ra','rw');
@@ -793,6 +796,7 @@ function logout(){
   localStorage.removeItem('pf_id');
   localStorage.removeItem('pf_rol');
   localStorage.removeItem('pf_nombre');
+  localStorage.removeItem('pf_rolTrabajador');
   S={rol:null,id:null,nombre:null};
   document.body.classList.remove('ri','ra','rw');
   // Restaurar navbar al estado de invitado
@@ -1052,8 +1056,10 @@ async function loadAnimAdm(){
       <td><span class="tag tag-${a.estado}">${elbl(a.estado)}</span></td>
       <td style="font-size:.78rem;color:var(--txt-3)">${fmt(a.ingreso_en)}</td>
       <td style="display:flex;gap:5px;align-items:center">
-        ${a.estado==='tratamiento'?`<button class="btn btn-v btn-sm" onclick="darDeAltaAnimal(${a.id},this)" title="Marcar como disponible"><i class="bi bi-check-circle me-1"></i>Alta</button>`:''}
-        <button class="btn btn-ov btn-sm" onclick="delAnimal(${a.id},'${a.nombre}',this)"><i class="bi bi-trash"></i></button>
+        ${S.rolTrabajador==='admin'?`
+          ${a.estado==='tratamiento'?`<button class="btn btn-v btn-sm" onclick="darDeAltaAnimal(${a.id},this)" title="Marcar como disponible"><i class="bi bi-check-circle me-1"></i>Alta</button>`:''}
+          <button class="btn btn-ov btn-sm" onclick="delAnimal(${a.id},'${a.nombre}',this)"><i class="bi bi-trash"></i></button>
+        `:'<span class="badge bg-secondary" style="font-size:.7rem">Solo lectura</span>'}
       </td>
     </tr>`).join('');
   }catch{tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--tierra);padding:20px">Error cargando.</td></tr>';}
