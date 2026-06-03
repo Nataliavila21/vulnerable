@@ -1,6 +1,7 @@
 # 🐾 Patitas Felices
+<img width="1363" height="906" alt="Screenshot_2026-06-03-17-11-30-72_c0d35d5c8ea536686f7fb1c9f2f8f274" src="https://github.com/user-attachments/assets/498c0983-88c6-465b-9dc0-8ccbf62b7cec" />
 <img width="979" height="511" alt="Screenshot_2026-06-03-17-11-21-94_40deb401b9ffe8e1df2f1cc5ba480b12" src="https://github.com/user-attachments/assets/ae0dd55d-7cf8-4f57-8a6b-0217524fd41d" />
-
+<img width="1483" height="917" alt="Screenshot_2026-06-03-17-24-22-45_c0d35d5c8ea536686f7fb1c9f2f8f274" src="https://github.com/user-attachments/assets/f35ded3b-9036-4182-bcf7-a17f78f91422" />
 <img width="987" height="1199" alt="Screenshot_2026-06-03-17-11-51-21_40deb401b9ffe8e1df2f1cc5ba480b12" src="https://github.com/user-attachments/assets/78c79f36-71af-42db-a716-e3db6dc85e68" />
 
 Plataforma web para la gestión integral de un refugio de animales, donde los adoptantes pueden explorar mascotas disponibles y enviar solicitudes de adopción, mientras el personal administra animales, historial médico y solicitudes desde un panel dedicado.
