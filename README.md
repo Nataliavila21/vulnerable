@@ -2,11 +2,16 @@
 
 <img width="1363" height="906" alt="Screenshot_2026-06-03-17-11-30-72_c0d35d5c8ea536686f7fb1c9f2f8f274" src="https://github.com/user-attachments/assets/498c0983-88c6-465b-9dc0-8ccbf62b7cec" />
 Requerimientos del Sistema
+
 •	El sistema debe guardar el nombre, especie, raza, edad, sexo y estado de cada animal.
+
 •	El sistema debe registrar si un animal está disponible, en tratamiento o ya fue adoptado.
 •	El sistema debe almacenar los datos de los adoptantes: nombre, teléfono, correo y dirección.
+
 •	El sistema debe registrar cada adopción indicando qué animal fue adoptado, por quién y en qué fecha.
+
 •	El sistema debe permitir al personal gestionar y consultar las adopciones.
+
 •	El sistema debe registrar la información del personal y voluntarios del centro (nombre, cargo, teléfono).
 
 <img width="979" height="511" alt="Screenshot_2026-06-03-17-11-21-94_40deb401b9ffe8e1df2f1cc5ba480b12" src="https://github.com/user-attachments/assets/ae0dd55d-7cf8-4f57-8a6b-0217524fd41d" />
@@ -30,6 +35,31 @@ Relaciones y cardinalidad:
 
 
 <img width="1483" height="917" alt="Screenshot_2026-06-03-17-24-22-45_c0d35d5c8ea536686f7fb1c9f2f8f274" src="https://github.com/user-attachments/assets/f35ded3b-9036-4182-bcf7-a17f78f91422" />
+Restricciones de cardinalidad:
+
+•	Un animal debe tener registrado exactamente 1 estado de salud en todo momento, pero puede tener entre 0 y N registros en su historial médico.
+•	Un adoptante puede realizar entre 0 y 3 adopciones como máximo (política del centro para garantizar bienestar animal).
+
+•	Cada adopción debe ser gestionada por exactamente 1 miembro del personal, y un miembro del personal puede gestionar entre 0 y N adopciones.
+
+Entidades débiles identificadas:
+
+•	HISTORIAL_MEDICO: Cada registro del historial médico de un animal depende completamente de la existencia del animal. Si el animal es eliminado del sistema, su historial deja de tener sentido. Además, el historial se identifica mediante el id_animal más un número de registro secuencial.
+
+•	CONTACTO_EMERGENCIA: Cada adoptante puede registrar contactos de emergencia, pero estos no tienen existencia propia sin el adoptante al que pertenecen.
+
+Jerarquía de herencia — PERSONAL:
+
+•	El supertipo PERSONAL se especializa en dos subtipos: VOLUNTARIO y EMPLEADO. Ambos comparten atributos comunes como id_personal, nombre, cargo y teléfono, pero cada uno tiene atributos propios que no aplican al otro.
+
+•	Esta especialización es disjunta (un miembro del personal no puede ser simultáneamente voluntario y empleado) y total (todo registro en PERSONAL debe pertenecer a uno de los dos subtipos).
+
+Atributos multivaluados y compuestos:
+
+•	El atributo vacunas de ANIMAL es multivaluado, ya que un animal puede tener varias vacunas registradas.
+
+•	El atributo direccion de ADOPTANTE es compuesto, formado por: calle, colonia, ciudad y código postal.
+
 
 <img width="987" height="1199" alt="Screenshot_2026-06-03-17-11-51-21_40deb401b9ffe8e1df2f1cc5ba480b12" src="https://github.com/user-attachments/assets/78c79f36-71af-42db-a716-e3db6dc85e68" />
 
