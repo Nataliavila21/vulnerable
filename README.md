@@ -96,5 +96,6 @@ Abre tu navegador en `http://localhost:3000` y deberías ver:
 
 - **API en vivo (Railway):** [https://patitas-backend-production.up.railway.app/](https://patitas-backend-production.up.railway.app/)
 - **Frontend (GitHub Pages):** [https://jokerkorio.github.io/patitas-api/#](https://jokerkorio.github.io/patitas-api/#)
-Este proyecto forma parte de un repositorio general de proyectos escolares, para visualizarlo visita el siguiente link: 
+
+-Este proyecto forma parte de un repositorio general de proyectos escolares, para visualizarlo visita el siguiente link: 
 https://github.com/gabrielhuav/DB-Coursework-2026-2
