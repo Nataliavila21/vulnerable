@@ -1,5 +1,31 @@
 # 🐾 Patitas Felices
 
+
+Un centro de adopción de animales necesita llevar un control organizado de:
+
+•	Los animales que tiene disponibles.
+
+•	Las personas interesadas en adoptar.
+
+•	Las adopciones realizadas.
+
+•	El personal o voluntarios que atienden el centro.
+
+
+
+Actualmente, la información se maneja en hojas de papel y archivos sueltos, lo que provoca:
+
+•	Pérdida de información.
+
+•	Dificultad para saber qué animales están disponibles.
+
+•	Falta de historial de adopciones.
+
+
+
+Por ello, se requiere un sistema de base de datos que centralice y organice toda la información.
+
+
 <img width="1363" height="906" alt="Screenshot_2026-06-03-17-11-30-72_c0d35d5c8ea536686f7fb1c9f2f8f274" src="https://github.com/user-attachments/assets/498c0983-88c6-465b-9dc0-8ccbf62b7cec" />
 Requerimientos del Sistema
 
