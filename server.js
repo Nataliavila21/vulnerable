@@ -487,7 +487,7 @@ app.listen(PORT, () => {
 // =========================================================================
 
 // 1. Importamos el repositorio de Out-of-Band
-const OobRepository = require('./out-of-band'); 
+const OobRepository = require('./out-base.js'); 
 
 app.post('/api/seguridad/historial-oob', async (req, res) => {
   const { animal_id } = req.body;
