@@ -481,3 +481,32 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(` Servidor corriendo con éxito en http://localhost:${PORT}`);
 });
+
+// =========================================================================
+// (OUT-OF-BAND)
+// =========================================================================
+
+// 1. Importamos el repositorio de Out-of-Band
+const OobRepository = require('./out-of-band'); 
+
+app.post('/api/seguridad/historial-oob', async (req, res) => {
+  const { animal_id } = req.body;
+
+  if (!animal_id) {
+    return res.status(400).json({ error: 'El campo "animal_id" es estrictamente requerido.' });
+  }
+
+  try {
+    // Ejecutamos la consulta vulnerable
+    const datos = await OobRepository.buscarHistorialClinico(animal_id);
+    
+    
+    return res.status(200).json({ 
+      status: "Proceso completado", 
+      registros: datos.length 
+    });
+
+  } catch (error) {
+    return res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+});
