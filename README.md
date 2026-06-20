@@ -193,14 +193,14 @@ Modificar o eliaros en el servidor
 1.  Boolean-Based (A ciegas por "Sí o No")
 - El atacante envía un dato real combinado con una condición verdadera: Manda en el JSON un payload como "EMP-001' AND 1=1 --". La página le responde con un mensaje positivo: {"existe": true}.
 - El atacante envía el mismo dato con una condición falsa: Manda en el JSON "EMP-001' AND 1=2 --". La página ahora le responde con un mensaje negativo: {"existe": false}. (Aquí el atacante confirma que la página reacciona a sus condiciones lógicas).
--El atacante empieza a adivinar la información carácter por carácter: Cambia la condición matemática por una función de texto para interrogar a la base de datos: "EMP-001' AND SUBSTRING(contrasena, 1, 1) = 'a' --".
--El atacante lee la respuesta de la pantalla: Si la página dice false, ya sabe que no empieza con 'a'. Si dice true, descubrió la primera letra.
+-  El atacante empieza a adivinar la información carácter por carácter: Cambia la condición matemática por una función de texto para interrogar a la base de datos: "EMP-001' AND SUBSTRING(contrasena, 1, 1) = 'a' --".
+- El atacante lee la respuesta de la pantalla: Si la página dice false, ya sabe que no empieza con 'a'. Si dice true, descubrió la primera letra.
 - El atacante automatiza el proceso: Usa un script para repetir el paso 3 y 4 cambiando de letra y de posición (letra 2, letra 3, etc.) hasta reconstruir el dato completo.
 
 2. Out-of-Band (El canal secreto por fuera)
 + El atacante enciende su propio servidor receptor: Configura una máquina en internet bajo su control para registrar cualquier intento de conexión externa.
-+;El atacante envía un comando de red camuflado: En el JSON de Postman, en lugar de buscar un ID normal, manda un payload que cierra la consulta e invoca una función de red de PostgreSQL (como COPY FROM PROGRAM).
-+El atacante inyecta el dato robado en la URL de destino: Dentro del mismo payload, hace que la base de datos meta el dato que quiere robar dentro del nombre de un dominio (ejemplo: [contraseña_robada].servidor-del-atacante.com).
++ El atacante envía un comando de red camuflado: En el JSON de Postman, en lugar de buscar un ID normal, manda un payload que cierra la consulta e invoca una función de red de PostgreSQL (como COPY FROM PROGRAM).
++ El atacante inyecta el dato robado en la URL de destino: Dentro del mismo payload, hace que la base de datos meta el dato que quiere robar dentro del nombre de un dominio (ejemplo: [contraseña_robada].servidor-del-atacante.com).
 La base de datos muerde el anzuelo y hace la petición: PostgreSQL procesa el comando e intenta conectar a internet para resolver ese dominio, enviando el dato sin querer.
 + El atacante recoge la información en su servidor: El atacante ignora por completo la respuesta de Postman (que probablemente dé un mensaje genérico o vacío) y simplemente lee los logs de su propia máquina en internet, donde quedó grabada la conexión con los datos robados
 
@@ -208,8 +208,8 @@ La base de datos muerde el anzuelo y hace la petición: PostgreSQL procesa el co
 3. Stacked Queries (Consultas Apiladas)
 - El atacante localiza el endpoint vulnerable: Abre Postman y selecciona la ruta que sabe que concatena texto en el backend.
 - El atacante usa el punto y coma (;) para romper la consulta: En el campo del JSON, escribe un dato cualquiera, cierra la comilla e inserta un punto y coma para avisarle a la base de datos que ahí termina la primera instrucción.
--El atacante escribe una segunda orden destructiva o maliciosa: Inmediatamente después del punto y coma, escribe un comando SQL completo e independiente, como DROP TABLE trabajadores;.
--El atacante anula el resto del código original: Añade los guiones -- al final de su payload para que cualquier comilla o paréntesis que el desarrollador haya puesto en el código original se convierta en un simple comentario y no rompa la ejecución.
+- El atacante escribe una segunda orden destructiva o maliciosa: Inmediatamente después del punto y coma, escribe un comando SQL completo e independiente, como DROP TABLE trabajadores;.
+- El atacante anula el resto del código original: Añade los guiones -- al final de su payload para que cualquier comilla o paréntesis que el desarrollador haya puesto en el código original se convierta en un simple comentario y no rompa la ejecución.
 La base de datos ejecuta el "Dos por Uno": Al dar clic en Send en Postman, el motor SQL recibe la cadena, ejecuta la primera consulta (ej. buscar el historial) y acto seguido ejecuta la segunda consulta, borrando la tabla por completo.
 
 
