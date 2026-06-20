@@ -1,22 +1,22 @@
 
-const { query } = require('../db'); 
+//const { query } = require('../db'); 
 
-const OobRepository = {
+/)const OobRepository = {
 
   
-  async buscarHistorialClinico(animalId) {
-    try {
+//  async buscarHistorialClinico(animalId) {
+   // try {
       
-      const sql = `SELECT * FROM historial_clinico WHERE animal_id = '${animalId}'`;
+    //  const sql = `SELECT * FROM historial_clinico WHERE animal_id = '${animalId}'`;
       
       
-      const [rows] = await query(sql);
-      return rows;
-    } catch (error) {
-      console.error(' Error interno en la consulta SQL:', error.message);
-      return [];
-    }
-  }
-};
+   //   const [rows] = await query(sql);
+    //  return rows;
+ //   } catch (error) {
+//      console.error(' Error interno en la consulta SQL:', error.message);
+ //     return [];
+//    }
+//  }
+// };
 
-module.exports = OobRepository;
+// module.exports = OobRepository;
