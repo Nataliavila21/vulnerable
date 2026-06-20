@@ -178,15 +178,17 @@ Abre tu navegador en `http://localhost:3000` y deberías ver:
 - `GET /stats` — dashboard con conteos generales
 
  
- SQL INJECTION
+##SQL INJECTION
+ 
 Una SQL injection es un tipo de ataque de seguridad donde un atacante inserta código SQL malicioso en una consulta que una aplicación envía a su base de datos.
 
 ¿Qué puede hacer un atacante?
 
 Saltarse autenticación (como el ejemplo anterior)
 Leer datos confidenciales (contraseñas, emails, tarjetas)
-Modificar o eliminar datos
-En algunos casos, ejecutar comandos en el servidor
+Modificar o eliaros en el servidor
+
+
 
 ## 🌐 Demo
 
