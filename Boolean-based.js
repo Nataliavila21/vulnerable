@@ -1,26 +1,26 @@
 
 //const db = require('../db'); 
-const VulnerableRepository = {
+//const VulnerableRepository = {
   
   
-  async verificarUsuarioExiste(username) {
-    try {
+//  async verificarUsuarioExiste(username) {
+ //   try {
       
-      const sql = `SELECT * FROM usuarios WHERE username = '${username}'`;
+ //     const sql = `SELECT * FROM usuarios WHERE username = '${username}'`;
       
-      const [rows] = await db.query(sql);
+//      const [rows] = await db.query(sql);
       
       
-      if (rows.length > 0) {
-        return { existe: true };
-      } else {
-        return { existe: false };
-      }
-    } catch (error) {
-      console.error('Error en la base de datos:', error.message);
-      return { existe: false }; 
-    }
-  }
-};
+     // if (rows.length > 0) {
+   //     return { existe: true };
+    //  } else {
+ //       return { existe: false };
+//      }
+//    } catch (error) {
+//      console.error('Error en la base de datos:', error.message);
+//      return { existe: false }; 
+//    }
+//  }
+//};
 
-module.exports = VulnerableRepository;
+//module.exports = VulnerableRepository;
