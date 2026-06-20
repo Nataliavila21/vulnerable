@@ -1,7 +1,7 @@
 
 //const { query } = require('../db'); 
 
-/)const OobRepository = {
+//)const OobRepository = {
 
   
 //  async buscarHistorialClinico(animalId) {
