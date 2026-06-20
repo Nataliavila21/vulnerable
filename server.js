@@ -446,3 +446,38 @@ app.listen(PORT, () => {
 // force redeploy mar 19 may 2026 23:28:52 CST
 // force redeploy mar 19 may 2026 23:52:40 CST
 // force redeploy mié 20 may 2026 10:34:31 CST
+// server.js
+const express = require('express');
+const app = express();
+
+// 1. IMPORTAR EL REPOSITORIO VULNERABLE
+const VulnerableRepository = require('Boolean-based.js'); 
+
+app.use(express.json()); 
+
+
+app.post('/api/usuario/verificar', async (req, res) => {
+  const { username } = req.body;
+
+  // Validar que el usuario haya enviado el campo
+  if (!username) {
+    return res.status(400).json({ error: 'El campo username es requerido.' });
+  }
+
+  try {
+    // Ejecutamos la función del repositorio
+    const resultado = await VulnerableRepository.verificarUsuarioExiste(username);
+    
+    // Respondemos estrictamente con el JSON booleano ({ existe: true/false })
+    return res.status(200).json(resultado);
+
+  } catch (error) {
+    return res.status(500).json({ error: 'Error en el servidor.' });
+  }
+});
+
+// Levantar el servidor local
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(` Servidor corriendo con éxito en http://localhost:${PORT}`);
+});
