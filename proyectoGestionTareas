@@ -1,0 +1,445 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+// ============================================================
+//  COLORES ANSI para la consola
+// ============================================================
+#define RESET   "\033[0m"
+#define BOLD    "\033[1m"
+#define ROJO    "\033[31m"
+#define VERDE   "\033[32m"
+#define AMARILLO "\033[33m"
+#define CIAN    "\033[36m"
+#define GRIS    "\033[90m"
+
+// ============================================================
+//  ESTRUCTURA NODO  —  Lista Enlazada Simple
+// ============================================================
+struct Nodo {
+    int     id;
+    string  nombre;
+    int     prioridad;    // 1 = Alta | 2 = Media | 3 = Baja
+    bool    completada;
+    Nodo*   siguiente;    // Puntero al siguiente nodo (lista enlazada)
+
+    Nodo(int i, const string& n, int p)
+        : id(i), nombre(n), prioridad(p),
+          completada(false), siguiente(nullptr) {}
+};
+
+// ============================================================
+//  CLASE GESTOR  —  Maneja la lista enlazada completa
+// ============================================================
+class GestorTareas {
+private:
+    Nodo* cabeza;       // Primer nodo de la lista
+    Nodo* cola;         // Ultimo nodo (insercion O(1))
+    int   contadorId;
+
+    // ----------------------------------------------------------
+    //  RECURSIVIDAD 1: Mostrar lista enlazada de forma recursiva
+    //  Complejidad: O(n)  — visita cada nodo exactamente una vez
+    //  Caso base : nodo == nullptr  →  fin de la lista
+    //  Caso rec. : imprime nodo actual y llama al siguiente
+    // ----------------------------------------------------------
+    void mostrarRecursivo(Nodo* nodo, int numero) {
+        if (nodo == nullptr) return;                    // Caso base
+
+        // Elegir color segun prioridad
+        string colorPrioridad, labelPrioridad;
+        if (nodo->prioridad == 1) { colorPrioridad = ROJO;     labelPrioridad = "ALTA "; }
+        else if (nodo->prioridad == 2) { colorPrioridad = AMARILLO; labelPrioridad = "MEDIA"; }
+        else                           { colorPrioridad = VERDE;    labelPrioridad = "BAJA "; }
+
+        string estado = nodo->completada
+            ? (string(VERDE) + "[HECHA]" + RESET)
+            : (string(GRIS)  + "[PEND.] " + RESET);
+
+        cout << "  " << numero << ". "
+             << estado << " "
+             << colorPrioridad << "[" << labelPrioridad << "]" << RESET
+             << "  ID:" << nodo->id
+             << "  " << (nodo->completada ? GRIS : BOLD)
+             << nodo->nombre << RESET << "\n";
+
+        mostrarRecursivo(nodo->siguiente, numero + 1);  // Llamada recursiva
+    }
+
+    // ----------------------------------------------------------
+    //  RECURSIVIDAD 2: Buscar nodo por nombre (busqueda recursiva)
+    //  Complejidad: O(n) promedio, O(1) si es el primero
+    //  Caso base A: nodo == nullptr  →  no encontrado
+    //  Caso base B: nodo->nombre == nombre  →  encontrado
+    //  Caso rec. : busca en el resto de la lista
+    // ----------------------------------------------------------
+    Nodo* buscarRecursivo(Nodo* nodo, const string& nombre) {
+        if (nodo == nullptr) return nullptr;            // Caso base A
+        if (nodo->nombre == nombre) return nodo;        // Caso base B
+        return buscarRecursivo(nodo->siguiente, nombre);// Llamada recursiva
+    }
+
+    // ----------------------------------------------------------
+    //  ORDENAMIENTO A: Bubble Sort por prioridad
+    //  Complejidad: O(n^2) tiempo | O(1) espacio
+    //  Intercambia DATOS entre nodos (los punteros no cambian)
+    //  Util para ilustrar el algoritmo de forma didactica
+    // ----------------------------------------------------------
+    void bubbleSort() {
+        if (!cabeza || !cabeza->siguiente) return;
+        bool intercambio;
+        do {
+            intercambio = false;
+            Nodo* actual = cabeza;
+            while (actual->siguiente) {
+                if (actual->prioridad > actual->siguiente->prioridad) {
+                    // Intercambiar datos (no punteros)
+                    swap(actual->id,         actual->siguiente->id);
+                    swap(actual->nombre,     actual->siguiente->nombre);
+                    swap(actual->prioridad,  actual->siguiente->prioridad);
+                    swap(actual->completada, actual->siguiente->completada);
+                    intercambio = true;
+                }
+                actual = actual->siguiente;
+            }
+        } while (intercambio);
+    }
+
+    // ----------------------------------------------------------
+    //  ORDENAMIENTO B: Quick Sort por prioridad
+    //  Complejidad: O(n log n) promedio | O(n^2) peor caso
+    //  Estrategia: copiar datos a vector, ordenar, reescribir lista
+    // ----------------------------------------------------------
+    void quickSort() {
+        if (!cabeza || !cabeza->siguiente) return;
+
+        // Recolectar datos en vector
+        vector<tuple<int,string,int,bool>> datos;
+        Nodo* cur = cabeza;
+        while (cur) {
+            datos.emplace_back(cur->id, cur->nombre, cur->prioridad, cur->completada);
+            cur = cur->siguiente;
+        }
+
+        // Ordenar vector por prioridad (campo 2 del tuple = indice 2)
+        sort(datos.begin(), datos.end(),
+             [](const auto& a, const auto& b){
+                 return get<2>(a) < get<2>(b);
+             });
+
+        // Reescribir datos en la lista enlazada (punteros sin cambio)
+        cur = cabeza;
+        for (auto& [id, nombre, prioridad, completada] : datos) {
+            cur->id         = id;
+            cur->nombre     = nombre;
+            cur->prioridad  = prioridad;
+            cur->completada = completada;
+            cur = cur->siguiente;
+        }
+    }
+
+    // ----------------------------------------------------------
+    //  BUSQUEDA BINARIA (requiere lista ordenada)
+    //  Complejidad: O(n) por la copia + O(log n) busqueda = O(n)
+    //  Se convierte a vector para acceso O(1) por indice
+    // ----------------------------------------------------------
+    Nodo* busquedaBinaria(int prioridadBuscada) {
+        // Copiar nodos en vector para acceso por indice
+        vector<Nodo*> nodos;
+        Nodo* cur = cabeza;
+        while (cur) { nodos.push_back(cur); cur = cur->siguiente; }
+
+        int izq = 0, der = (int)nodos.size() - 1;
+        while (izq <= der) {
+            int mid = (izq + der) / 2;
+            if (nodos[mid]->prioridad == prioridadBuscada)
+                return nodos[mid];
+            else if (nodos[mid]->prioridad < prioridadBuscada)
+                izq = mid + 1;
+            else
+                der = mid - 1;
+        }
+        return nullptr;
+    }
+
+public:
+    GestorTareas() : cabeza(nullptr), cola(nullptr), contadorId(1) {}
+
+    // ----------------------------------------------------------
+    //  1. AGREGAR TAREA
+    //     Inserta al final de la lista enlazada (como una cola)
+    //     Complejidad: O(1) — tenemos puntero al ultimo nodo
+    // ----------------------------------------------------------
+    void agregarTarea(const string& nombre, int prioridad) {
+        if (prioridad < 1 || prioridad > 3) {
+            cout << ROJO << "  Error: prioridad debe ser 1, 2 o 3.\n" << RESET;
+            return;
+        }
+        Nodo* nueva = new Nodo(contadorId++, nombre, prioridad);
+
+        if (!cabeza) {
+            cabeza = cola = nueva;           // Lista vacia: cabeza y cola apuntan al mismo nodo
+        } else {
+            cola->siguiente = nueva;         // Enlazar al final
+            cola = nueva;                    // Actualizar puntero cola
+        }
+
+        string lbl = (prioridad==1) ? "Alta" : (prioridad==2) ? "Media" : "Baja";
+        cout << VERDE << "  Tarea agregada: " << RESET
+             << "\"" << nombre << "\""
+             << GRIS << "  (ID:" << nueva->id << " | Prioridad:" << lbl << ")\n" << RESET;
+    }
+
+    // ----------------------------------------------------------
+    //  2. MARCAR COMO COMPLETADA
+    //     Usa busquedaLinealRecursiva para encontrar el nodo
+    //     Complejidad: O(n)
+    // ----------------------------------------------------------
+    void marcarCompletada(const string& nombre) {
+        Nodo* nodo = buscarRecursivo(cabeza, nombre);   // Busqueda recursiva
+        if (nodo) {
+            if (nodo->completada) {
+                cout << AMARILLO << "  La tarea ya estaba marcada como completada.\n" << RESET;
+            } else {
+                nodo->completada = true;
+                cout << VERDE << "  Tarea completada: " << RESET
+                     << "\"" << nombre << "\"\n";
+            }
+        } else {
+            cout << ROJO << "  Tarea \"" << nombre << "\" no encontrada.\n" << RESET;
+        }
+    }
+
+    // ----------------------------------------------------------
+    //  3. ELIMINAR TAREA
+    //     Busqueda lineal + re-enlace de punteros
+    //     Complejidad: O(n)
+    // ----------------------------------------------------------
+    void eliminarTarea(const string& nombre) {
+        if (!cabeza) {
+            cout << ROJO << "  La lista esta vacia.\n" << RESET;
+            return;
+        }
+
+        // Caso especial: eliminar cabeza
+        if (cabeza->nombre == nombre) {
+            Nodo* temp = cabeza;
+            cabeza = cabeza->siguiente;
+            if (!cabeza) cola = nullptr;     // Lista quedo vacia
+            delete temp;
+            cout << VERDE << "  Tarea eliminada: " << RESET << "\"" << nombre << "\"\n";
+            return;
+        }
+
+        // Buscar nodo anterior al que se quiere eliminar
+        Nodo* anterior = cabeza;
+        while (anterior->siguiente && anterior->siguiente->nombre != nombre)
+            anterior = anterior->siguiente;
+
+        if (!anterior->siguiente) {
+            cout << ROJO << "  Tarea \"" << nombre << "\" no encontrada.\n" << RESET;
+            return;
+        }
+
+        Nodo* aEliminar = anterior->siguiente;
+        anterior->siguiente = aEliminar->siguiente; // Re-enlace: saltar el nodo eliminado
+        if (aEliminar == cola) cola = anterior;      // Actualizar cola si era el ultimo
+        delete aEliminar;
+        cout << VERDE << "  Tarea eliminada: " << RESET << "\"" << nombre << "\"\n";
+    }
+
+    // ----------------------------------------------------------
+    //  4. ORDENAR POR PRIORIDAD
+    //     Ofrece dos algoritmos al usuario
+    // ----------------------------------------------------------
+    void ordenarPorPrioridad(int algoritmo = 1) {
+        if (!cabeza) {
+            cout << ROJO << "  No hay tareas para ordenar.\n" << RESET;
+            return;
+        }
+        if (algoritmo == 1) {
+            bubbleSort();
+            cout << VERDE << "  Ordenado con Bubble Sort" << RESET
+                 << " (1=Alta → 2=Media → 3=Baja)\n";
+        } else {
+            quickSort();
+            cout << VERDE << "  Ordenado con Quick Sort" << RESET
+                 << " (1=Alta → 2=Media → 3=Baja)\n";
+        }
+    }
+
+    // ----------------------------------------------------------
+    //  5. MOSTRAR TODAS LAS TAREAS (recursivo)
+    //     Llama a mostrarRecursivo() que recorre la lista
+    //     Complejidad: O(n)
+    // ----------------------------------------------------------
+    void mostrarTareas() {
+        cout << "\n" << CIAN << BOLD
+             << "  ╔══════════════════════════════════════════╗\n"
+             << "  ║          LISTA DE TAREAS                 ║\n"
+             << "  ╚══════════════════════════════════════════╝\n"
+             << RESET;
+
+        if (!cabeza) {
+            cout << GRIS << "  (Sin tareas registradas)\n" << RESET;
+        } else {
+            mostrarRecursivo(cabeza, 1);    // Llamada inicial — recursividad
+        }
+        cout << CIAN << "  ══════════════════════════════════════════\n\n" << RESET;
+    }
+
+    // ----------------------------------------------------------
+    //  6. BUSCAR TAREA POR NOMBRE
+    //     Usa busquedaLinealRecursiva
+    // ----------------------------------------------------------
+    void buscarPorNombre(const string& nombre) {
+        Nodo* r = buscarRecursivo(cabeza, nombre);
+        if (r) {
+            string lbl = (r->prioridad==1) ? "Alta" : (r->prioridad==2) ? "Media" : "Baja";
+            string est = r->completada ? "Completada" : "Pendiente";
+            cout << VERDE << "  Encontrada: " << RESET
+                 << "ID:" << r->id
+                 << "  Nombre: \"" << r->nombre << "\""
+                 << "  Prioridad: " << lbl
+                 << "  Estado: " << est << "\n";
+        } else {
+            cout << ROJO << "  Tarea \"" << nombre << "\" no encontrada.\n" << RESET;
+        }
+    }
+
+    // ----------------------------------------------------------
+    //  7. BUSQUEDA BINARIA POR PRIORIDAD (lista debe estar ordenada)
+    // ----------------------------------------------------------
+    void buscarPorPrioridad(int prioridad) {
+        Nodo* r = busquedaBinaria(prioridad);
+        string lbl = (prioridad==1) ? "Alta" : (prioridad==2) ? "Media" : "Baja";
+        if (r) {
+            cout << VERDE << "  Primera tarea con prioridad " << lbl << ": " << RESET
+                 << "\"" << r->nombre << "\"  (ID:" << r->id << ")\n";
+        } else {
+            cout << AMARILLO << "  No hay tareas con prioridad " << lbl << ".\n" << RESET;
+        }
+    }
+
+    // Liberar memoria al destruir el objeto
+    ~GestorTareas() {
+        Nodo* actual = cabeza;
+        while (actual) {
+            Nodo* temp = actual;
+            actual = actual->siguiente;
+            delete temp;
+        }
+    }
+};
+
+// ============================================================
+//  MENU PRINCIPAL
+// ============================================================
+void imprimirMenu() {
+    cout << CIAN << BOLD
+         << "\n  ╔══════════════════════════════════════════╗\n"
+         << "  ║       GESTOR DE TAREAS  —  C++           ║\n"
+         << "  ╠══════════════════════════════════════════╣\n"
+         << RESET
+         << "  ║  1. Agregar tarea                        ║\n"
+         << "  ║  2. Marcar como completada               ║\n"
+         << "  ║  3. Eliminar tarea                       ║\n"
+         << "  ║  4. Ordenar por prioridad                ║\n"
+         << "  ║  5. Mostrar todas las tareas (recursivo) ║\n"
+         << "  ║  6. Buscar tarea por nombre              ║\n"
+         << "  ║  7. Buscar por prioridad (binaria)       ║\n"
+         << "  ║  0. Salir                                ║\n"
+         << CIAN << BOLD
+         << "  ╚══════════════════════════════════════════╝\n"
+         << RESET
+         << "  Opcion: ";
+}
+
+// ============================================================
+//  MAIN
+// ============================================================
+int main() {
+    GestorTareas gestor;
+    int opcion;
+    string nombre;
+    int prioridad;
+
+    cout << BOLD << CIAN
+         << "\n  Bienvenido al Gestor de Tareas\n"
+         << "  Lista Enlazada | Busqueda | Ordenamiento | Recursividad\n"
+         << RESET;
+
+    do {
+        imprimirMenu();
+        cin >> opcion;
+        cin.ignore();
+
+        switch (opcion) {
+
+            // ─────────────────────────────────────────
+            case 1:
+                cout << "  Nombre de la tarea   : ";
+                getline(cin, nombre);
+                cout << "  Prioridad (1=Alta / 2=Media / 3=Baja): ";
+                cin >> prioridad;
+                cin.ignore();
+                gestor.agregarTarea(nombre, prioridad);
+                break;
+
+            // ─────────────────────────────────────────
+            case 2:
+                cout << "  Nombre de la tarea a completar: ";
+                getline(cin, nombre);
+                gestor.marcarCompletada(nombre);
+                break;
+
+            // ─────────────────────────────────────────
+            case 3:
+                cout << "  Nombre de la tarea a eliminar: ";
+                getline(cin, nombre);
+                gestor.eliminarTarea(nombre);
+                break;
+
+            // ─────────────────────────────────────────
+            case 4: {
+                cout << "  Algoritmo: 1 = Bubble Sort  |  2 = Quick Sort  : ";
+                int alg; cin >> alg; cin.ignore();
+                gestor.ordenarPorPrioridad(alg);
+                break;
+            }
+
+            // ─────────────────────────────────────────
+            case 5:
+                gestor.mostrarTareas();
+                break;
+
+            // ─────────────────────────────────────────
+            case 6:
+                cout << "  Nombre de la tarea a buscar: ";
+                getline(cin, nombre);
+                gestor.buscarPorNombre(nombre);
+                break;
+
+            // ─────────────────────────────────────────
+            case 7:
+                cout << "  Prioridad a buscar (1=Alta / 2=Media / 3=Baja): ";
+                cin >> prioridad; cin.ignore();
+                cout << GRIS << "  Nota: la lista debe estar ordenada para busqueda binaria.\n" << RESET;
+                gestor.buscarPorPrioridad(prioridad);
+                break;
+
+            // ─────────────────────────────────────────
+            case 0:
+                cout << VERDE << "\n  Hasta luego.\n\n" << RESET;
+                break;
+
+            default:
+                cout << ROJO << "  Opcion no valida.\n" << RESET;
+        }
+
+    } while (opcion != 0);
+
+    return 0;
+}
