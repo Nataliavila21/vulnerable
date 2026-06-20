@@ -451,62 +451,61 @@ const express = require('express');
 const app = express();
 
 // 1. IMPORTAR EL REPOSITORIO VULNERABLE
-const VulnerableRepository = require('Boolean-based.js'); 
+//const VulnerableRepository = require('Boolean-based.js'); 
 
-app.use(express.json()); 
+//app.use(express.json()); 
 
 
-app.post('/api/usuario/verificar', async (req, res) => {
-  const { username } = req.body;
+//app.post('/api/usuario/verificar', async (req, res) => {
+//  const { username } = req.body;
 
   // Validar que el usuario haya enviado el campo
-  if (!username) {
-    return res.status(400).json({ error: 'El campo username es requerido.' });
-  }
+//  if (!username) {
+//    return res.status(400).json({ error: 'El campo username es requerido.' });
+//  }
 
-  try {
+//  try {
     // Ejecutamos la función del repositorio
-    const resultado = await VulnerableRepository.verificarUsuarioExiste(username);
+    //const resultado = await VulnerableRepository.verificarUsuarioExiste(username);
     
     // Respondemos estrictamente con el JSON booleano ({ existe: true/false })
-    return res.status(200).json(resultado);
+ //   return res.status(200).json(resultado);
 
-  } catch (error) {
-    return res.status(500).json({ error: 'Error en el servidor.' });
-  }
-});
+//  } catch (error) {
+//    return res.status(500).json({ error: 'Error en el servidor.' });
+//  }
+//});
 
 // Levantar el servidor local
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(` Servidor corriendo con éxito en http://localhost:${PORT}`);
-});
+//const PORT = process.env.PORT || 3000;
+//app.listen(PORT, () => {
+//  console.log(` Servidor corriendo con éxito en http://localhost:${PORT}`);
+//});
 
 // =========================================================================
 // (OUT-OF-BAND)
 // =========================================================================
 
 // 1. Importamos el repositorio de Out-of-Band
-const OobRepository = require('./out-base.js'); 
+//const OobRepository = require('./out-base.js'); 
 
-app.post('/api/seguridad/historial-oob', async (req, res) => {
-  const { animal_id } = req.body;
+//app.post('/api/seguridad/historial-oob', async (req, res) => {
+//  const { animal_id } = req.body;
 
-  if (!animal_id) {
-    return res.status(400).json({ error: 'El campo "animal_id" es estrictamente requerido.' });
-  }
+//  if (!animal_id) {
+//    return res.status(400).json({ error: 'El campo "animal_id" es estrictamente requerido.' });
+//  }
 
-  try {
+//  try {
     // Ejecutamos la consulta vulnerable
-    const datos = await OobRepository.buscarHistorialClinico(animal_id);
+//    const datos = await OobRepository.buscarHistorialClinico(animal_id);
     
     
-    return res.status(200).json({ 
-      status: "Proceso completado", 
-      registros: datos.length 
-    });
+//    return res.status(200).json({ 
+ //     status: "Proceso completado",      registros: datos.length 
+ //   });
 
-  } catch (error) {
-    return res.status(500).json({ error: 'Error interno del servidor.' });
-  }
-});
+//  } catch (error) {
+//    return res.status(500).json({ error: 'Error interno del servidor.' });
+//  }
+//});
